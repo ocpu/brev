@@ -1,0 +1,6 @@
+coverage/
+test/
+
+.travis.yml
+Evently.*
+index.ocs
