@@ -3,13 +3,13 @@ A basic event system
 
 ## API
 
-- [on(eventName, handler)](#on(eventName-handler))
-- [once(eventName, handler)](#once(eventName-handler))
-- [many(eventName, timesAvailable, handler)](#many(eventName-timesAvailable-handler))
-- [off(eventName, handler)](#off(eventName-handler))
-- [trigger(eventName[, event)]](#trigger(eventName-[event]))
-- [mixin(obj)](#mixin(obj))
-- [create()](#create())
+- [on(eventName, handler)](#oneventName-handler)
+- [once(eventName, handler)](#onceeventName-handler)
+- [many(eventName, timesAvailable, handler)](#manyeventName-timesAvailable-handler)
+- [off(eventName, handler)](#offeventName-handler)
+- [trigger(eventName[, event)]](#triggereventName-[event])
+- [mixin(obj)](#mixinobj)
+- [create()](#create)
 
 ### on(eventName, handler)
 - `eventName` [\<String>][mdn-str] The event name
