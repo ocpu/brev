@@ -1,9 +1,9 @@
-var evently = require('../index')
+var brev = require('../')
 var sinon = require('sinon')
 var expect = require('expect.js')
 
 /**
- * @type {evently}
+ * @type {brev}
  */
 var bus
 var eventName = 'some event'
@@ -11,7 +11,7 @@ var eventValue = 'some value'
 var spy1, spy2
 
 beforeEach(function () {
-    bus = evently.create()
+    bus = brev.create()
     spy1 = sinon.spy()
     spy2 = sinon.spy()
 })

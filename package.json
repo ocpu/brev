@@ -1,5 +1,5 @@
 {
-  "name": "evently",
+  "name": "brev",
   "version": "1.0.0",
   "description": "A basic event system",
   "main": "index.js",
@@ -16,9 +16,9 @@
   "scripts": {
     "test": "istanbul cover node_modules/mocha/bin/_mocha"
   },
-  "repository": "PoroShadows/Evently",
-  "bugs": "https://github.com/PoroShadows/Evently/issues",
-  "homepage": "https://github.com/PoroShadows/Evently#readme",
+  "repository": "PoroShadows/Brev",
+  "bugs": "https://github.com/PoroShadows/Brev/issues",
+  "homepage": "https://github.com/PoroShadows/Brev#readme",
   "keywords": [
     "event",
     "events",

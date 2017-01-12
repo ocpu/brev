@@ -1,4 +1,4 @@
-# Evently
+# Brev
 A basic event system
 
 [![Build Status][img-travis]][url-travis]
@@ -6,6 +6,8 @@ A basic event system
 [![NPM Downloads][img-downloads]][url-downloads]
 [![License][img-license]][url-license]
 [![codecov][img-cc]][url-cc]
+
+##
 
 ## API
 
@@ -20,52 +22,52 @@ A basic event system
 ### on(eventName, handler)
 - `eventName` [\<String>][mdn-str] The event name
 - `handler` [\<Function>][mdn-fun] The function handling the event
-- Returns: \<evently> Mainly if you want to chaining calls
+- Returns: \<brev> Mainly if you want to chaining calls
 
 Registers a handler to the given eventName.
 
 ```js
 function handler(e) {}
-evently.on('connect', handler);
+brev.on('connect', handler);
 ```
 
 ### once(eventName, handler)
 - `eventName` [\<String>][mdn-str] The event name
 - `handler` [\<Function>][mdn-fun] The function handling the event
-- Returns: \<evently> Mainly if you want to chaining calls
+- Returns: \<brev> Mainly if you want to chaining calls
 
 Registers a handler to the given eventName.
 It will only be called one time before it is unregistered.
 
 ```js
 function handler(e) {}
-evently.once('connect', handler);
+brev.once('connect', handler);
 ```
 
 ### many(eventName, timesAvailable, handler)
 - `eventName` [\<String>][mdn-str] The event name
 - `timesAvailable` [\<String>][mdn-str] The event name
 - `handler` [\<Number>][mdn-num] The function handling the event
-- Returns: \<evently> Mainly if you want to chaining calls
+- Returns: \<brev> Mainly if you want to chaining calls
 
 Registers a handler to the given eventName.
 It will only be called x amount of times before it is unregistered.
 
 ```js
 function handler(e) {}
-evently.many('connect', 3, handler);
+brev.many('connect', 3, handler);
 ```
 
 ### off(eventName, handler)
 - `eventName` [\<String>][mdn-str] The event name
 - `handler` [\<Function>][mdn-fun] The function handling the event
-- Returns: \<evently> Mainly if you want to chaining calls
+- Returns: \<brev> Mainly if you want to chaining calls
 
 Unregisters a handler to the given eventName.
 
 ```js
 function handler(e) {}
-evently.off('connect', handler)
+brev.off('connect', handler)
 ```
 
 ### trigger(eventName\[, event])
@@ -75,7 +77,7 @@ evently.off('connect', handler)
 Trigger a event to all handlers registered under the given event name.
 
 ```js
-evently.trigger('connect', { status: 'ok' })
+brev.trigger('connect', { status: 'ok' })
 ```
 
 ### mixin(obj)
@@ -87,16 +89,16 @@ Mixin the current event system with th specified object.
 (This method will override any and all functions with the same names as the api.)
 
 ```js
-evently.mixin(myObj)
+brev.mixin(myObj)
 ```
 
 ### create()
-- Returns: \<evently> A new event system
+- Returns: \<brev> A new event system
 
 Creates a new and fresh event system.
 
 ```js
-var bus = evently.create()
+var bus = brev.create()
 ```
 
 [mdn-str]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
@@ -104,14 +106,14 @@ var bus = evently.create()
 [mdn-num]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
 [mdn-obj]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[url-travis]: https://travis-ci.org/PoroShadows/Evently
-[url-npm]: https://npmjs.org/package/evently
+[url-travis]: https://travis-ci.org/PoroShadows/Brev
+[url-npm]: https://npmjs.org/package/brev
 [url-license]: lisense.md
-[url-downloads]: https://npmjs.org/package/evently
-[url-cc]: https://codecov.io/gh/PoroShadows/Evently
+[url-downloads]: https://npmjs.org/package/brev
+[url-cc]: https://codecov.io/gh/PoroShadows/Brev
 
-[img-travis]: https://img.shields.io/travis/PoroShadows/Evently.svg?style=flat-square
-[img-npm]: https://img.shields.io/npm/v/evently.svg?style=flat-square
-[img-license]: https://img.shields.io/npm/l/evently.svg?style=flat-square
-[img-downloads]: https://img.shields.io/npm/dm/evently.svg?style=flat-square
-[img-cc]: https://img.shields.io/codecov/c/github/PoroShadows/Evently/master.svg?style=flat-square
+[img-travis]: https://img.shields.io/travis/PoroShadows/Brev.svg?style=flat-square
+[img-npm]: https://img.shields.io/npm/v/brev.svg?style=flat-square
+[img-license]: https://img.shields.io/npm/l/brev.svg?style=flat-square
+[img-downloads]: https://img.shields.io/npm/dm/brev.svg?style=flat-square
+[img-cc]: https://img.shields.io/codecov/c/github/PoroShadows/Brev/master.svg?style=flat-square

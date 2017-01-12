@@ -11,7 +11,7 @@ function search(bus, eventName, handler) {
  *
  * @type {{_handlers: {}, on: module.exports.on, off: module.exports.off, many: module.exports.many, once: module.exports.once, trigger: module.exports.trigger, mixin: module.exports.mixin, create: module.exports.create, info: module.exports.info}}
  */
-var evently = module.exports = {
+var brev = module.exports = {
     /**
      * The current handlers in the system.
      *
@@ -23,7 +23,7 @@ var evently = module.exports = {
      *
      * @param {String} eventName
      * @param {Function} handler
-     * @returns {evently}
+     * @returns {brev}
      */
     on: function on(eventName, handler) {
         return this.many(eventName, Infinity, handler)
@@ -33,7 +33,7 @@ var evently = module.exports = {
      *
      * @param {String} eventName
      * @param {Function} handler
-     * @returns {evently}
+     * @returns {brev}
      */
     off: function off(eventName, handler) {
         var handlers = this._handlers[eventName]
@@ -49,7 +49,7 @@ var evently = module.exports = {
      * @param {String} eventName
      * @param {Number} timesAvailable
      * @param {Function} handler
-     * @returns {evently}
+     * @returns {brev}
      */
     many: function many(eventName, timesAvailable, handler) {
         if (typeof timesAvailable === 'undefined' || timesAvailable < 1 && isFinite(timesAvailable))
@@ -67,7 +67,7 @@ var evently = module.exports = {
      *
      * @param {String} eventName
      * @param {Function} handler
-     * @returns {evently}
+     * @returns {brev}
      */
     once: function once(eventName, handler) {
         return this.many(eventName, 1, handler)
@@ -97,16 +97,16 @@ var evently = module.exports = {
      * @returns {*}
      */
     mixin: function mixin(obj) {
-        return assign(obj, evently)
+        return assign(obj, brev)
     },
     /**
      * Creates a new and fresh event system.
      *
-     * @returns {evently}
+     * @returns {brev}
      */
     create: function create() {
         //noinspection JSValidateTypes
-        return assign(evently, { _handlers: {} })
+        return assign(brev, { _handlers: {} })
     },
     /**
      * Get some information about a specific event

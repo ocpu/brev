@@ -1,4 +1,4 @@
-var bus = require('evently');
+var bus = require('brev');
 
 function handler(event) {
     console.log(event);
