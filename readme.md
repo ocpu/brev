@@ -3,11 +3,11 @@ A basic event system
 
 ## API
 
-- [on(eventName, handler)](#oneventName-handler)
-- [once(eventName, handler)](#onceeventName-handler)
-- [many(eventName, timesAvailable, handler)](#manyeventName-timesAvailable-handler)
-- [off(eventName, handler)](#offeventName-handler)
-- [trigger(eventName[, event)]](#triggereventName-[event])
+- [on(eventName, handler)](#oneventname-handler)
+- [once(eventName, handler)](#onceeventname-handler)
+- [many(eventName, timesAvailable, handler)](#manyeventname-timesavailable-handler)
+- [off(eventName, handler)](#offeventname-handler)
+- [trigger(eventName[, event)]](#triggereventname-[event])
 - [mixin(obj)](#mixinobj)
 - [create()](#create)
 
