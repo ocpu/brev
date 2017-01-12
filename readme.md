@@ -22,7 +22,7 @@ A basic event system
 ### on(eventName, handler)
 - `eventName` [\<String>][mdn-str] The event name
 - `handler` [\<Function>][mdn-fun] The function handling the event
-- Returns: \<brev> Mainly if you want to chaining calls
+- Returns: \<brev> Mainly if you want to chain calls
 
 Registers a handler to the given eventName.
 
@@ -34,7 +34,7 @@ brev.on('connect', handler);
 ### once(eventName, handler)
 - `eventName` [\<String>][mdn-str] The event name
 - `handler` [\<Function>][mdn-fun] The function handling the event
-- Returns: \<brev> Mainly if you want to chaining calls
+- Returns: \<brev> Mainly if you want to chain calls
 
 Registers a handler to the given eventName.
 It will only be called one time before it is unregistered.
@@ -46,8 +46,8 @@ brev.once('connect', handler);
 
 ### many(eventName, timesAvailable, handler)
 - `eventName` [\<String>][mdn-str] The event name
-- `timesAvailable` [\<String>][mdn-str] The event name
-- `handler` [\<Number>][mdn-num] The function handling the event
+- `timesAvailable` [\<Number>][mdn-num] The event name
+- `handler` [\<Function>][mdn-fun] The function handling the event
 - Returns: \<brev> Mainly if you want to chaining calls
 
 Registers a handler to the given eventName.
@@ -61,7 +61,7 @@ brev.many('connect', 3, handler);
 ### off(eventName, handler)
 - `eventName` [\<String>][mdn-str] The event name
 - `handler` [\<Function>][mdn-fun] The function handling the event
-- Returns: \<brev> Mainly if you want to chaining calls
+- Returns: \<brev> Mainly if you want to chain calls
 
 Unregisters a handler to the given eventName.
 
