@@ -7,7 +7,7 @@ A basic event system
 - [once(eventName, handler)](#onceeventname-handler)
 - [many(eventName, timesAvailable, handler)](#manyeventname-timesavailable-handler)
 - [off(eventName, handler)](#offeventname-handler)
-- [trigger(eventName[, event)]](#triggereventname-[event])
+- [trigger(eventName[, event)]](#triggereventname-event)
 - [mixin(obj)](#mixinobj)
 - [create()](#create)
 
