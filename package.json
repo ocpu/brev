@@ -4,21 +4,29 @@
   "description": "A basic event system",
   "main": "index.js",
   "author": "Martin Hövre <sickan843@live.se>",
+  "tonicExampleFilename": "example.js",
+  "dependencies": {
+    "object-assign": "^4.1.0",
+    "asap": "^2.0.5"
+  },
   "devDependencies": {
     "expect.js": "^0.3.1",
     "mocha": "^3.2.0",
     "sinon": "^1.17.7"
   },
   "scripts": {
-    "test": "istanbul cover --report html node_modules/mocha/bin/mocha -- "
+    "test": "istanbul cover node_modules/mocha/bin/_mocha"
   },
   "repository": "PoroShadows/Evently",
   "bugs": "https://github.com/PoroShadows/Evently/issues",
   "homepage": "https://github.com/PoroShadows/Evently#readme",
   "keywords": [
     "event",
-    "eventsystem",
-    "event system"
+    "events",
+    "eventemitter",
+    "on/off",
+    "on",
+    "off"
   ],
   "license": "MIT"
 }
