@@ -1,5 +1,4 @@
 var assign = require('object-assign')
-var asap = require('asap')
 function search(bus, eventName, handler) {
     var handlers = bus._handlers[eventName]
     if (handlers) for (var i = 0; i < handlers.length; i++)
