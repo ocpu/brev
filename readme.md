@@ -106,7 +106,7 @@ var bus = evently.create()
 
 [url-travis]: https://travis-ci.org/PoroShadows/Evently
 [url-npm]: https://npmjs.org/package/evently
-[url-license]: LICENSE.md
+[url-license]: lisense.md
 [url-downloads]: https://npmjs.org/package/evently
 [url-cc]: https://codecov.io/gh/PoroShadows/Evently
 
