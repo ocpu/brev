@@ -1,15 +1,21 @@
 # Evently
 A basic event system
 
+[![Build Status][img-travis]][url-travis]
+[![NPM version][img-npm]][url-npm]
+[![NPM Downloads][img-downloads]][url-downloads]
+[![License][img-license]][url-license]
+[![codecov][img-cc]][url-cc]
+
 ## API
 
-- [on(eventName, handler)](#on(eventName-handler))
-- [once(eventName, handler)](#once(eventName-handler))
-- [many(eventName, timesAvailable, handler)](#many(eventName-timesAvailable-handler))
-- [off(eventName, handler)](#off(eventName-handler))
-- [trigger(eventName[, event)]](#trigger(eventName-[event]))
-- [mixin(obj)](#mixin(obj))
-- [create()](#create())
+- [on(eventName, handler)](#oneventname-handler)
+- [once(eventName, handler)](#onceeventname-handler)
+- [many(eventName, timesAvailable, handler)](#manyeventname-timesavailable-handler)
+- [off(eventName, handler)](#offeventname-handler)
+- [trigger(eventName[, event)]](#triggereventname-event)
+- [mixin(obj)](#mixinobj)
+- [create()](#create)
 
 ### on(eventName, handler)
 - `eventName` [\<String>][mdn-str] The event name
@@ -97,3 +103,15 @@ var bus = evently.create()
 [mdn-fun]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function
 [mdn-num]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
 [mdn-obj]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
+
+[url-travis]: https://travis-ci.org/PoroShadows/Evently
+[url-npm]: https://npmjs.org/package/evently
+[url-license]: LICENSE.md
+[url-downloads]: https://npmjs.org/package/evently
+[url-cc]: https://codecov.io/gh/PoroShadows/Evently
+
+[img-travis]: https://img.shields.io/travis/PoroShadows/Evently.svg?style=flat-square
+[img-npm]: https://img.shields.io/npm/v/evently.svg?style=flat-square
+[img-license]: https://img.shields.io/npm/l/evently.svg?style=flat-square
+[img-downloads]: https://img.shields.io/npm/dm/evently.svg?style=flat-square
+[img-cc]: https://img.shields.io/codecov/c/github/PoroShadows/Evently/master.svg?style=flat-square
