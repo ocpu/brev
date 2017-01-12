@@ -45,25 +45,26 @@ var evently = module.exports = {
     },
     /**
      * Registers a handler to the given eventName.
+     * It will only be called x amount of times before it is unregistered.
      *
      * @param {String} eventName
-     * @param {Number} amount
+     * @param {Number} timesAvailable
      * @param {Function} handler
      * @returns {evently}
      */
-    many: function many(eventName, amount, handler) {
-        if (typeof amount === 'undefined' || amount < 1 && isFinite(amount))
+    many: function many(eventName, timesAvailable, handler) {
+        if (typeof timesAvailable === 'undefined' || timesAvailable < 1 && isFinite(timesAvailable))
             throw new TypeError('amount has to be defined and be higher than 0')
         if (typeof handler !== 'function')
             throw new TypeError('handler has to be defined and has to be a function')
         var handlers = this._handlers[eventName] = this._handlers[eventName] || []
         if (search(this, eventName, handler) === -1)
-            handlers.push({ max: amount, executed: 0, handler: handler })
+            handlers.push({ max: timesAvailable, executed: 0, handler: handler })
         return this
     },
     /**
      * Registers a handler to the given eventName.
-     * It will only be called one time before it is unregistered
+     * It will only be called one time before it is unregistered.
      *
      * @param {String} eventName
      * @param {Function} handler
@@ -91,9 +92,9 @@ var evently = module.exports = {
         }
     },
     /**
-     * Mixin the current event system with a object.
+     * Mixin the current event system with th specified object.
      *
-     * @param {*} obj
+     * @param {(Object|*)} obj
      * @returns {*}
      */
     mixin: function mixin(obj) {
