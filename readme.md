@@ -106,14 +106,14 @@ var bus = brev.create()
 [mdn-num]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
 [mdn-obj]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[url-travis]: https://travis-ci.org/PoroShadows/Brev
+[url-travis]: https://travis-ci.org/ocpu/Brev
 [url-npm]: https://npmjs.org/package/brev
 [url-license]: lisense.md
 [url-downloads]: https://npmjs.org/package/brev
-[url-cc]: https://codecov.io/gh/PoroShadows/Brev
+[url-cc]: https://codecov.io/gh/ocpu/Brev
 
-[img-travis]: https://img.shields.io/travis/PoroShadows/Brev.svg?style=flat-square
+[img-travis]: https://img.shields.io/travis/ocpu/Brev.svg?style=flat-square
 [img-npm]: https://img.shields.io/npm/v/brev.svg?style=flat-square
 [img-license]: https://img.shields.io/npm/l/brev.svg?style=flat-square
 [img-downloads]: https://img.shields.io/npm/dm/brev.svg?style=flat-square
-[img-cc]: https://img.shields.io/codecov/c/github/PoroShadows/Brev/master.svg?style=flat-square
+[img-cc]: https://img.shields.io/codecov/c/github/ocpu/Brev/master.svg?style=flat-square
