@@ -142,11 +142,12 @@ globalBrev.createBus = function () {
 /**
  * Get some information about a specific event
  *
+ * @param {Brev} bus
  * @param {String} eventName
  * @returns {{name: String, exists: Boolean, length: Number, handlers: Array.<Handler>}}
  */
-globalBrev.reflect = function (eventName) {
-    var handlers = this.__handlers__[eventName]
+globalBrev.reflect = function (bus, eventName) {
+    var handlers = bus.__handlers__[eventName]
     var exist = typeof handlers !== 'undefined'
     return {
         name: eventName,

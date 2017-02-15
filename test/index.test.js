@@ -14,9 +14,9 @@ beforeEach(function () {
 })
 it('registers a function', function (done) {
     var expected = [{ max: Infinity, executed: 0, func: spy1 }]
-    expect(brev.reflect(eventName).handlers).to.eql([])
+    expect(brev.reflect(bus, eventName).handlers).to.eql([])
     bus.on(eventName, spy1)
-    expect(brev.reflect(eventName).handlers).to.eql(expected)
+    expect(brev.reflect(bus, eventName).handlers).to.eql(expected)
     done()
 })
 it('registering a non function throws', function (done) {
@@ -26,35 +26,35 @@ it('registering a non function throws', function (done) {
     done()
 })
 it('can\'t register a handler twice', function (done) {
-    expect(brev.reflect(eventName).length).to.be(0)
+    expect(brev.reflect(bus, eventName).length).to.be(0)
     bus.on(eventName, spy1)
-    expect(brev.reflect(eventName).length).to.be(1)
+    expect(brev.reflect(bus, eventName).length).to.be(1)
     bus.on(eventName, spy1)
-    expect(brev.reflect(eventName).length).to.be(1)
+    expect(brev.reflect(bus, eventName).length).to.be(1)
     done()
 })
 it('unregisters a function', function (done) {
     var expected = [{ max: Infinity, executed: 0, func: spy1 }]
-    expect(brev.reflect(eventName).handlers).to.eql([])
+    expect(brev.reflect(bus, eventName).handlers).to.eql([])
     bus.on(eventName, spy1)
-    expect(brev.reflect(eventName).handlers).to.eql(expected)
+    expect(brev.reflect(bus, eventName).handlers).to.eql(expected)
     bus.off(eventName, spy1)
-    expect(brev.reflect(eventName).handlers).to.eql([])
+    expect(brev.reflect(bus, eventName).handlers).to.eql([])
     done()
 })
 it('unregisters nothing if the function does not exist', function (done) {
     var expected = [{ max: Infinity, executed: 0, func: spy1 }]
-    expect(brev.reflect(eventName).handlers).to.eql([])
+    expect(brev.reflect(bus, eventName).handlers).to.eql([])
     bus.on(eventName, spy1)
-    expect(brev.reflect(eventName).handlers).to.eql(expected)
+    expect(brev.reflect(bus, eventName).handlers).to.eql(expected)
     bus.off(eventName, spy2)
-    expect(brev.reflect(eventName).handlers).to.eql(expected)
+    expect(brev.reflect(bus, eventName).handlers).to.eql(expected)
     done()
 })
 it('unregisters nothing if the event does not exist', function (done) {
-    expect(brev.reflect(eventName).exists).to.be(false)
+    expect(brev.reflect(bus, eventName).exists).to.be(false)
     bus.off(eventName, spy1)
-    expect(brev.reflect(eventName).exists).to.be(false)
+    expect(brev.reflect(bus, eventName).exists).to.be(false)
     done()
 })
 it('triggers handler', function (done) {
@@ -85,37 +85,37 @@ it('can mix into another object', function (done) {
 })
 it('executes only once', function (done) {
     var expected = [{ max: 1, executed: 0, func: spy1 }]
-    expect(brev.reflect(eventName).handlers).to.eql([])
+    expect(brev.reflect(bus, eventName).handlers).to.eql([])
     bus.once(eventName, spy1)
-    expect(brev.reflect(eventName).handlers).to.eql(expected)
+    expect(brev.reflect(bus, eventName).handlers).to.eql(expected)
     bus.emit(eventName)
     setTimeout(function () {
-        expect(brev.reflect(eventName).handlers).to.eql([])
+        expect(brev.reflect(bus, eventName).handlers).to.eql([])
         bus.emit(eventName)
     }, 10)
     setTimeout(function () {
-        expect(brev.reflect(eventName).handlers).to.eql([])
+        expect(brev.reflect(bus, eventName).handlers).to.eql([])
         done()
     }, 20)
 })
 it('executes only twice', function (done) {
     var expected1 = [{ max: 2, executed: 0, func: spy1 }]
     var expected2 = [{ max: 2, executed: 1, func: spy1 }]
-    expect(brev.reflect(eventName).handlers).to.eql([])
+    expect(brev.reflect(bus, eventName).handlers).to.eql([])
     bus.many(eventName, 2, spy1)
-    expect(brev.reflect(eventName).handlers).to.eql(expected1)
+    expect(brev.reflect(bus, eventName).handlers).to.eql(expected1)
     bus.emit(eventName)
 
     setTimeout(function () {
-        expect(brev.reflect(eventName).handlers).to.eql(expected2)
+        expect(brev.reflect(bus, eventName).handlers).to.eql(expected2)
         bus.emit(eventName)
     }, 10)
     setTimeout(function () {
-        expect(brev.reflect(eventName).handlers).to.eql([])
+        expect(brev.reflect(bus, eventName).handlers).to.eql([])
         bus.emit(eventName)
     }, 20)
     setTimeout(function () {
-        expect(brev.reflect(eventName).handlers).to.eql([])
+        expect(brev.reflect(bus, eventName).handlers).to.eql([])
         done()
     }, 30)
 })
