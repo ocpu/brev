@@ -1,13 +1,10 @@
 {
   "name": "brev",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A basic event system",
   "main": "index.js",
   "author": "Martin Hövre <sickan843@live.se>",
   "tonicExampleFilename": "example.js",
-  "dependencies": {
-    "object-assign": "^4.1.0"
-  },
   "devDependencies": {
     "expect.js": "^0.3.1",
     "mocha": "^3.2.0",
@@ -22,10 +19,8 @@
   "keywords": [
     "event",
     "events",
-    "eventemitter",
-    "on/off",
-    "on",
-    "off"
+    "eventbus"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "unpkg": "dist/brev.js"
 }

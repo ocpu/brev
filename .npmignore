@@ -1,6 +1,9 @@
 coverage/
 test/
+.idea/
+docs/
 
 .travis.yml
-Evently.*
-index.ocs
+.gitignore
+bower.json
+CNAME

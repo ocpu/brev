@@ -1,14 +1,5 @@
 'use strict';
-(function (factory) {
-    /* istanbul ignore next */
-    //noinspection JSUnresolvedVariable
-    if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') //noinspection JSUnresolvedVariable
-        module.exports = factory()
-    else//noinspection JSUnresolvedVariable
-        if (typeof define !== 'undefined' && define.amd) //noinspection JSUnresolvedFunction
-            define(factory)
-})(function () {
-
+var brev = (function () {
 /**
  * Find a handler in an event
  *
@@ -20,7 +11,7 @@
 function search(bus, eventName, handler) {
     var handlers = bus.__handlers__[eventName]
     if (handlers) for (var i = 0; i < handlers.length; i++)
-        if (handlers[i].func === handler)
+        if (handlers[i].handler === handler)
             return i
     return -1
 }
@@ -29,10 +20,10 @@ function Handler(max, handler) {
     this.max = max
     this.executed = 0
     //noinspection JSUnresolvedVariable
-    this.func = handler
+    this.handler = handler
 }
 
-var properties = ['__handlers__', 'many', 'once', 'on', 'off', 'emit', 'mixin']
+var properties = ['__handlers__', 'many', 'once', 'on', 'off', 'emit', 'mixin', 'createBus', 'reflect']
 
 function Brev() {
     /**
@@ -110,8 +101,8 @@ Brev.prototype.emit = function (eventName, event) {
     if (handlers) for (var i = 0; i < handlers.length; i++) {
         var handler = handlers[i]
         if (isFinite(handler.max)) if (++handler.executed >= handler.max)
-            this.off(eventName, handler.func)
-        handler.func(event)
+            this.off(eventName, handler.handler)
+        handler.handler(event)
     }
 }
 /**
@@ -124,28 +115,21 @@ Brev.prototype.mixin = function (obj) {
     for (var i = 0; i < properties.length; i++)
         obj[properties[i]] = this[properties[i]]
 }
-
-/**
- * The global Brev bus
- *
- * @type {Brev}
- */
-var globalBrev = new Brev
 /**
  * Creates a new and fresh event system.
  *
  * @returns {Brev}
  */
-globalBrev.createBus = function () {
+Brev.prototype.createBus = function () {
     return new Brev
 }
 /**
  * Get some information about a specific event
  *
  * @param {String} eventName
- * @returns {{name: String, exists: Boolean, length: Number, handlers: Array.<Handler>}}
+ * @returns {{name: String, exists: Boolean, length: Number, handlers: Array.<{max: Number, executed: Number, handler: Function}>}}
  */
-globalBrev.reflect = function (eventName) {
+Brev.prototype.reflect = function (eventName) {
     var handlers = this.__handlers__[eventName]
     var exist = typeof handlers !== 'undefined'
     return {
@@ -156,5 +140,5 @@ globalBrev.reflect = function (eventName) {
     }
 }
 
-return globalBrev
-})
+return new Brev
+})()

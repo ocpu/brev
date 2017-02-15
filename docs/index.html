@@ -22,86 +22,86 @@
     <h1 id="brev">Brev</h1>
     <p>A basic event system</p>
 
-    <p><a href="https://travis-ci.org/PoroShadows/Brev"><img src="https://img.shields.io/travis/PoroShadows/Brev.svg?style=flat-square" alt="Build Status" /></a>
+    <p><a href="https://travis-ci.org/PoroShadows/Brev"><img src="https://img.shields.io/travis/ocpu/Brev.svg?style=flat-square" alt="Build Status" /></a>
         <a href="https://npmjs.org/package/brev"><img src="https://img.shields.io/npm/v/brev.svg?style=flat-square" alt="NPM version" /></a>
         <a href="https://npmjs.org/package/brev"><img src="https://img.shields.io/npm/dm/brev.svg?style=flat-square" alt="NPM Downloads" /></a>
-        <a href="lisense.md"><img src="https://img.shields.io/npm/l/brev.svg?style=flat-square" alt="License" /></a>
-        <a href="https://codecov.io/gh/PoroShadows/Brev"><img src="https://img.shields.io/codecov/c/github/PoroShadows/Brev/master.svg?style=flat-square" alt="codecov" /></a></p>
+        <a href="https://github.com/ocpu/Brev/blob/master/license.md"><img src="https://img.shields.io/npm/l/brev.svg?style=flat-square" alt="License" /></a>
+        <a href="https://codecov.io/gh/PoroShadows/Brev"><img src="https://img.shields.io/codecov/c/github/ocpu/Brev/master.svg?style=flat-square" alt="codecov" /></a></p>
 
     <h1 id="section">#</h1>
 
     <h2 id="api">API</h2>
 
     <ul>
-        <li><a href="#oneventname-handler">on(eventName, handler)</a></li>
-        <li><a href="#onceeventname-handler">once(eventName, handler)</a></li>
-        <li><a href="#manyeventname-timesavailable-handler">many(eventName, timesAvailable, handler)</a></li>
-        <li><a href="#offeventname-handler">off(eventName, handler)</a></li>
-        <li><a href="#triggereventname-event">trigger(eventName[, event)]</a></li>
-        <li><a href="#mixinobj">mixin(obj)</a></li>
-        <li><a href="#create">create()</a></li>
+        <li><a href="#oneventname-handler">bus.on(eventName, handler)</a></li>
+        <li><a href="#onceeventname-handler">bus.once(eventName, handler)</a></li>
+        <li><a href="#manyeventname-timesavailable-handler">bus.many(eventName, timesAvailable, handler)</a></li>
+        <li><a href="#offeventname-handler">bus.off(eventName, handler)</a></li>
+        <li><a href="#triggereventname-event">bus.trigger(eventName[, event])</a></li>
+        <li><a href="#mixinobj">bus.mixin(obj)</a></li>
+        <li><a href="#create">bus.create()</a></li>
+        <li><a href="#reflecteventName">bus.reflect(eventName)</a></li>
     </ul>
 
-    <h3 id="oneventname-handler">on(eventName, handler)</h3>
+    <h3 id="oneventname-handler">bus.on(eventName, handler)</h3>
     <ul>
         <li><code class="highlighter-rouge">eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">&lt;String&gt;</a> The event name</li>
         <li><code class="highlighter-rouge">handler</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">&lt;Function&gt;</a> The function handling the event</li>
-        <li>Returns: &lt;brev&gt; Mainly if you want to chain calls</li>
+        <li>Returns: <a href="#brev">&lt;brev&gt;</a> The instance</li>
     </ul>
 
     <p>Registers a handler to the given eventName.</p>
 
     <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">handler</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{}</span>
-<span class="nx">brev</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">,</span> <span class="nx">handler</span><span class="p">);</span>
+<span class="nx">bus</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">,</span> <span class="nx">handler</span><span class="p">);</span>
 </code></pre>
     </div>
 
-    <h3 id="onceeventname-handler">once(eventName, handler)</h3>
+    <h3 id="onceeventname-handler">bus.once(eventName, handler)</h3>
     <ul>
         <li><code class="highlighter-rouge">eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">&lt;String&gt;</a> The event name</li>
         <li><code class="highlighter-rouge">handler</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">&lt;Function&gt;</a> The function handling the event</li>
-        <li>Returns: &lt;brev&gt; Mainly if you want to chain calls</li>
+        <li>Returns: <a href="#brev">&lt;brev&gt;</a> The instance</li>
     </ul>
 
-    <p>Registers a handler to the given eventName.
-        It will only be called one time before it is unregistered.</p>
+    <p>Registers a handler to the given eventName. It will only be called one time before it is unregistered.</p>
 
     <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">handler</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{}</span>
-<span class="nx">brev</span><span class="p">.</span><span class="nx">once</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">,</span> <span class="nx">handler</span><span class="p">);</span>
+<span class="nx">bus</span><span class="p">.</span><span class="nx">once</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">,</span> <span class="nx">handler</span><span class="p">);</span>
 </code></pre>
     </div>
 
-    <h3 id="manyeventname-timesavailable-handler">many(eventName, timesAvailable, handler)</h3>
+    <h3 id="manyeventname-timesavailable-handler">bus.many(eventName, timesAvailable, handler)</h3>
     <ul>
         <li><code class="highlighter-rouge">eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">&lt;String&gt;</a> The event name</li>
         <li><code class="highlighter-rouge">timesAvailable</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">&lt;Number&gt;</a> The event name</li>
         <li><code class="highlighter-rouge">handler</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">&lt;Function&gt;</a> The function handling the event</li>
-        <li>Returns: &lt;brev&gt; Mainly if you want to chaining calls</li>
+        <li>Returns: <a href="#brev">&lt;Brev&gt;</a> The instance</li>
     </ul>
 
     <p>Registers a handler to the given eventName.
         It will only be called x amount of times before it is unregistered.</p>
 
     <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">handler</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{}</span>
-<span class="nx">brev</span><span class="p">.</span><span class="nx">many</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="nx">handler</span><span class="p">);</span>
+<span class="nx">bus</span><span class="p">.</span><span class="nx">many</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="nx">handler</span><span class="p">);</span>
 </code></pre>
     </div>
 
-    <h3 id="offeventname-handler">off(eventName, handler)</h3>
+    <h3 id="offeventname-handler">bus.off(eventName, handler)</h3>
     <ul>
         <li><code class="highlighter-rouge">eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">&lt;String&gt;</a> The event name</li>
         <li><code class="highlighter-rouge">handler</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">&lt;Function&gt;</a> The function handling the event</li>
-        <li>Returns: &lt;brev&gt; Mainly if you want to chain calls</li>
+        <li>Returns: <a href="#brev">&lt;Brev&gt;</a> The instance</li>
     </ul>
 
     <p>Unregisters a handler to the given eventName.</p>
 
     <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">handler</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{}</span>
-<span class="nx">brev</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">,</span> <span class="nx">handler</span><span class="p">)</span>
+<span class="nx">bus</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">,</span> <span class="nx">handler</span><span class="p">)</span>
 </code></pre>
     </div>
 
-    <h3 id="triggereventname-event">trigger(eventName[, event])</h3>
+    <h3 id="triggereventname-event">bus.emit(eventName[, event])</h3>
     <ul>
         <li><code class="highlighter-rouge">eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">&lt;String&gt;</a> The event name</li>
         <li><code class="highlighter-rouge">event</code> &lt;Any&gt; Any kind of value you want to pass to the handler(s) <strong>Default:</strong> <code class="highlighter-rouge">undefined</code></li>
@@ -109,27 +109,27 @@
 
     <p>Trigger a event to all handlers registered under the given event name.</p>
 
-    <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">brev</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">,</span> <span class="p">{</span> <span class="na">status</span><span class="p">:</span> <span class="s1">'ok'</span> <span class="p">})</span>
+    <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">bus</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">,</span> <span class="p">{</span> <span class="na">status</span><span class="p">:</span> <span class="s1">'ok'</span> <span class="p">})</span>
 </code></pre>
     </div>
 
-    <h3 id="mixinobj">mixin(obj)</h3>
+    <h3 id="mixinobj">bus.mixin(obj)</h3>
     <ul>
         <li><code class="highlighter-rouge">obj</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">&lt;Object&gt;</a> | &lt;Any&gt; The object you want the event system to mix into</li>
-        <li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">&lt;Object&gt;</a> | &lt;Any&gt; The mixed object</li>
+        <!--<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">&lt;Object&gt;</a> | &lt;Any&gt; The mixed object</li>-->
     </ul>
 
     <p>Mixin the current event system with th specified object.</p>
 
     <p>(This method will override any and all functions with the same names as the api.)</p>
 
-    <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">brev</span><span class="p">.</span><span class="nx">mixin</span><span class="p">(</span><span class="nx">myObj</span><span class="p">)</span>
+    <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">bus</span><span class="p">.</span><span class="nx">mixin</span><span class="p">(</span><span class="nx">myObj</span><span class="p">)</span>
 </code></pre>
     </div>
 
-    <h3 id="create">create()</h3>
+    <h3 id="create">bus.createBus()</h3>
     <ul>
-        <li>Returns: &lt;brev&gt; A new event system</li>
+        <li>Returns: <a href="#brev">&lt;Brev&gt;</a> A new event system</li>
     </ul>
 
     <p>Creates a new and fresh event system.</p>
@@ -138,13 +138,29 @@
 </code></pre>
     </div>
 
+    <h3 id="reflecteventName">bus.reflect(eventName)</h3>
+    <ul>
+        <li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">&lt;Object&gt;</a>
+            <ul>
+                <li>name: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">&lt;String&gt;</a> The name of the event</li>
+                <li>exists: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">&lt;Boolean&gt;</a> If there are handlers for the event</li>
+                <li>length: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">&lt;Number&gt;</a> The number of handlers registered on the event</li>
+                <li>handlers: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">&lt;Array.<a href="#handler">&lt;Handler&gt;</a>&gt;</a> The handlers registered on the event</li>
+            </ul>
+        </li>
+    </ul>
+
+    <p>Get information about a specific event</p>
+
+    <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">reflection</span> <span class="o">=</span> <span class="nx">bus</span><span class="p">.</span><span class="nx">create</span><span class="p">()</span>
+</code></pre>
+    </div>
+
 
 
     <footer class="site-footer">
 
-        <span class="site-footer-owner"><a href="https://github.com/PoroShadows/Brev">Brev</a> is maintained by <a href="https://github.com/PoroShadows">PoroShadows</a>.</span>
-
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+        <span class="site-footer-owner"><a href="https://github.com/ocpu/Brev">Brev</a> is maintained by <a href="https://github.com/ocpu">Martin Hövre</a>.</span>
     </footer>
 </section>
 
