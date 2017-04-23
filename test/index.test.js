@@ -1,49 +1,40 @@
-var brev = require('../')
-var sinon = require('sinon')
-var expect = require('expect.js')
+const { Brev, reflect, createBus } = require('../')
+const sinon = require('sinon')
+const expect = require('expect.js')
 
-var bus
-var eventName = 'some event'
-var eventValue = 'some value'
-var spy1, spy2
+let bus
+const eventName = 'some event'
+const eventValue = 'some value'
+let spy1, spy2
 
 beforeEach(function () {
-    bus = brev.createBus()
+    bus = createBus()
     spy1 = sinon.spy()
     spy2 = sinon.spy()
 })
-it('registers a function', function (done) {
-    var expected = [{ max: Infinity, executed: 0, func: spy1 }]
-    expect(brev.reflect(bus, eventName).handlers).to.eql([])
+it('registers a function', () => {
+    let expected = [{ max: Infinity, executed: 0, listener: spy1 }]
+    expect(reflect(bus, eventName)).to.eql([])
     bus.on(eventName, spy1)
-    expect(brev.reflect(bus, eventName).handlers).to.eql(expected)
-    done()
+    expect(reflect(bus, eventName)).to.eql(expected)
 })
-it('registering a non function throws', function (done) {
-    expect(function () {
-        bus.on(eventName)
-    }).to.throwException(/handler has to be defined and has to be a function/)
-    done()
-})
-it('can\'t register a handler twice', function (done) {
-    expect(brev.reflect(bus, eventName).length).to.be(0)
+it('unregisters a function', () => {
+    let expected = [{ max: Infinity, executed: 0, listener: spy1 }]
+    expect(reflect(bus, eventName)).to.eql([])
     bus.on(eventName, spy1)
-    expect(brev.reflect(bus, eventName).length).to.be(1)
-    bus.on(eventName, spy1)
-    expect(brev.reflect(bus, eventName).length).to.be(1)
-    done()
-})
-it('unregisters a function', function (done) {
-    var expected = [{ max: Infinity, executed: 0, func: spy1 }]
-    expect(brev.reflect(bus, eventName).handlers).to.eql([])
-    bus.on(eventName, spy1)
-    expect(brev.reflect(bus, eventName).handlers).to.eql(expected)
+    expect(reflect(bus, eventName)).to.eql(expected)
     bus.off(eventName, spy1)
-    expect(brev.reflect(bus, eventName).handlers).to.eql([])
-    done()
+    expect(reflect(bus, eventName)).to.eql([])
+})
+it('can\'t register a handler twice', () => {
+    expect(reflect(bus, eventName).length).to.be(0)
+    bus.on(eventName, spy1)
+    expect(reflect(bus, eventName).length).to.be(1)
+    bus.on(eventName, spy1)
+    expect(reflect(bus, eventName).length).to.be(1)
 })
 it('unregisters nothing if the function does not exist', function (done) {
-    var expected = [{ max: Infinity, executed: 0, func: spy1 }]
+    var expected = [{ max: Infinity, executed: 0, fn: spy1 }]
     expect(brev.reflect(bus, eventName).handlers).to.eql([])
     bus.on(eventName, spy1)
     expect(brev.reflect(bus, eventName).handlers).to.eql(expected)
@@ -84,7 +75,7 @@ it('can mix into another object', function (done) {
     done()
 })
 it('executes only once', function (done) {
-    var expected = [{ max: 1, executed: 0, func: spy1 }]
+    var expected = [{ max: 1, executed: 0, fn: spy1 }]
     expect(brev.reflect(bus, eventName).handlers).to.eql([])
     bus.once(eventName, spy1)
     expect(brev.reflect(bus, eventName).handlers).to.eql(expected)
@@ -99,8 +90,8 @@ it('executes only once', function (done) {
     }, 20)
 })
 it('executes only twice', function (done) {
-    var expected1 = [{ max: 2, executed: 0, func: spy1 }]
-    var expected2 = [{ max: 2, executed: 1, func: spy1 }]
+    var expected1 = [{ max: 2, executed: 0, fn: spy1 }]
+    var expected2 = [{ max: 2, executed: 1, fn: spy1 }]
     expect(brev.reflect(bus, eventName).handlers).to.eql([])
     bus.many(eventName, 2, spy1)
     expect(brev.reflect(bus, eventName).handlers).to.eql(expected1)
