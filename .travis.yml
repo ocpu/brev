@@ -4,9 +4,6 @@ node_js:
   - "iojs"
   - "7"
   - "6"
-  - "5"
-  - "4"
-  - "3"
 before_script:
   - npm install -g istanbul
 after_success:
