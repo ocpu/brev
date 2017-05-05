@@ -1,26 +1,28 @@
 {
-    "name": "brev",
-    "version": "1.1.0",
-    "description": "A basic event system",
-    "main": "index.js",
-    "author": "Martin Hövre <sickan843@live.se>",
-    "tonicExampleFilename": "example.js",
-    "devDependencies": {
-        "expect.js": "^0.3.1",
-        "mocha": "^3.2.0",
-        "sinon": "^1.17.7"
-    },
-    "scripts": {
-        "test": "istanbul cover node_modules/mocha/bin/_mocha"
-    },
-    "repository": "ocpu/Brev",
-    "bugs": "https://github.com/PoroShadows/Brev/issues",
-    "homepage": "https://github.com/PoroShadows/Brev#readme",
-    "keywords": [
-        "event",
-        "events",
-        "eventbus"
-    ],
-    "license": "MIT",
-    "unpkg": "dist/brev.min.js"
+  "name": "brev",
+  "version": "1.1.0",
+  "description": "A basic event system",
+  "main": "index.js",
+  "author": "Martin Hövre <sickan843@live.se>",
+  "tonicExampleFilename": "example.js",
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "mocha": "^3.2.0",
+    "sinon": "^1.17.7",
+    "tap": "^10.3.2"
+  },
+  "scripts": {
+    "test": "tap test/*.js --cov",
+    "posttest": "tap --coverage-report=text-summary"
+  },
+  "repository": "ocpu/Brev",
+  "bugs": "https://github.com/PoroShadows/Brev/issues",
+  "homepage": "https://github.com/PoroShadows/Brev#readme",
+  "keywords": [
+    "event",
+    "events",
+    "eventbus"
+  ],
+  "license": "MIT",
+  "unpkg": "dist/brev.min.js"
 }

@@ -1,7 +1,5 @@
-const {
-    reflect,
-    createBus
-} = require('../')
+require('tap').mochaGlobals()
+const { reflect, createBus } = require('../')
 const sinon = require('sinon')
 const expect = require('expect.js')
 
