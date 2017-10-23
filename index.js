@@ -1,78 +1,92 @@
-'use strict';
-(function(factory) {
-    /* istanbul ignore next */
-    if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-        module.exports = factory()
-    else if (typeof define !== 'undefined' && define.amd)
-        define(factory)
-    else window.brev = factory()
-})(function() {
+function search(forListener) {
+    return function (inItem) {
+        return inItem && typeof inItem.listener === "function" && inItem.listener === forListener
+    }
+}
 
-    var brev;
-    (function(brev) {
-        brev.Brev = (function() {
-            function Brev() {
-                this._listeners = {}
-            }
+function off(listeners, eventName, listener) {
+    if (!(eventName in listeners))
+        return
+    var index
+    if (~(index = listeners[eventName].findIndex(search(listener)))) 
+        listeners[eventName].splice(index, 1)
+}
 
-            Brev.prototype._search = function(eventName, listener) {
-                if (eventName in this._listeners)
-                    for (var i = 0, array = this._listeners[eventName]; i < array.length; i++)
-                        if (array[i].listener === listener)
-                            return i
-                return -1
-            }
-            Brev.prototype.on = function(eventName, listener) {
-                this.many(eventName, Infinity, listener)
-            }
-            Brev.prototype.off = function(eventName, listener) {
-                var search = this._search(eventName, listener)
-                if (search !== -1)
-                    this._listeners[eventName].splice(search, 1)
-            }
-            Brev.prototype.once = function(eventName, listener) {
-                var _this = this
-                return new Promise(function(resolve) {
-                    return _this.on(eventName, function(event) {
-                        if (listener)
-                            resolve(listener(event))
-                        resolve(event)
-                    })
-                })
-            }
-            Brev.prototype.many = function(eventName, max, listener) {
-                if (this._search(eventName, listener) === -1) {
-                    var ref = this._listeners[eventName] || (this._listeners[eventName] = [])
-                    ref.push({
-                        executed: 0,
-                        max: max,
-                        listener: listener
-                    })
-                }
-            }
-            Brev.prototype.emit = function(eventName, event) {
-                if (eventName in this._listeners) {
-                    var brevListeners = this._listeners[eventName]
-                    for (var i = 0; i < brevListeners.length; i++) {
-                        var brevListener = brevListeners[i]
-                        brevListener.listener(event)
-                        brevListener.executed++
-                            if (brevListener.executed >= brevListener.max)
-                                this.off(eventName, brevListener.listener)
-                    }
-                }
-            }
-            return Brev
-        }())
+function many(listeners, eventName, max, listener) {
+    if (isFinite(max) && max < 0)
+        return this
+    if (!eventName && typeof eventName !== "string")
+        return this
+    if (!listener && typeof listener !== "function")
+        return this
 
-        brev.createBus = function createBus() {
-            return new brev.Brev()
+    if (!(eventName in listeners) || !~listeners[eventName].findIndex(search(listener)))
+        listeners[eventName] = (listeners[eventName] || []).concat({
+            executed: 0,
+            max: max,
+            listener: listener
+        })
+    return this
+}
+
+var idCounter = 0
+function once(listeners, eventName, listener) {
+    return new Promise(function (resolve, reject) {
+        once_fn.id = idCounter++
+        many(listeners, eventName, 1, once_fn)
+        function once_fn(event) {
+            try {
+                resolve(listener ? listener(event) : event)
+            } catch (e) {
+                reject(e)
+            }
         }
-        brev.reflect = function reflect(bus, eventName) {
-            return eventName ? bus._listeners[eventName] || [] : Object.keys(bus._listeners)
+    })
+}
+
+function on(listeners, eventName, listener) {
+    return many.call(this, listeners, eventName, Infinity, listener)
+}
+
+function emit(listeners, eventName, event) {
+    if (eventName in listeners) {
+        var item, i = listeners[eventName].length
+        
+        while (i--) {
+            item = listeners[eventName][i]
+            item.listener.call(null, event)
+            if (!isFinite(item.max))
+                return
+            item.executed++
+            if (item.executed >= item.max)
+                listeners[eventName].splice(i, 1)
         }
-    })(brev || (brev = {}))
+    }
+}
 
+function reflect(listeners, eventName) {
+    return listeners[eventName] || []
+}
 
-    return brev
-})
+exports.createBus = function createBus() {
+    // { [eventName]: [{ executed, max, listener }, ...] }
+    var listeners = {}
+    var bus = {
+        off: off.bind(null, listeners),
+        /**
+         * Registers a handler to the given eventName.
+         * It will only be called x amount of times before it is unregistered.
+         *
+         * @param {String} eventName
+         * @param {Number} timesAvailable
+         * @param {Function} handler
+         * @returns {brev}
+         */
+        many: many.bind(bus, listeners),
+        once: once.bind(null, listeners),
+        on: on.bind(bus, listeners),
+        emit: emit.bind(null, listeners),
+        reflect: reflect.bind(null, listeners)
+    }
+    return bus
+}
