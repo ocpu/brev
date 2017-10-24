@@ -6,6 +6,10 @@ function handler(event) {
 
 bus.on('connect', handler);
 
-bus.trigger('connect', 'connected');
+bus.emit('connect', 'connected');
 
 bus.off('connect', handler);
+
+bus.once("finnish").then(e => {
+    console.log(e);
+});

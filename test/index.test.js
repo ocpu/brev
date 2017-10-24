@@ -6,7 +6,8 @@ const { createBus } = require('../')
 let bus = createBus()
 const eventName = 'some event'
 const eventValue = 'some value'
-let spy1, spy2
+let spy1 = sinon.spy(),
+    spy2 = sinon.spy()
 
 beforeEach(() => {
     bus = createBus()
@@ -117,4 +118,48 @@ it('many executes a function correctly ', () => {
     expect(spy1.callCount).to.be(2)
     expect(bus.reflect(eventName)).to.eql([])
     bus.emit(eventName)
+})
+it("many max cannot be below or equal to 0", () => {
+    expect(bus.reflect(eventName).length).to.be(0)
+    bus.many(eventName, 0, () => {})
+    bus.many(eventName, -1, () => {})
+    bus.many(eventName, -1000, () => {})
+    expect(bus.reflect(eventName).length).to.be(0)
+})
+it("cannot register with a empty event string", () => {
+    expect(bus.reflect(eventName).length).to.be(0)
+    bus.many("", 1, () => {})
+    expect(bus.reflect(eventName).length).to.be(0)
+})
+it("cannot register on event that is not a string", () => {
+    expect(bus.reflect(eventName).length).to.be(0)
+    bus.many(1, 1, () => {})
+    bus.many(true, 1, () => {})
+    bus.many(false, 1, () => {})
+    bus.many(() => {}, 1, () => {})
+    bus.many(void 0, 1, () => {})
+    bus.many(null, 1, () => {})
+    expect(bus.reflect(eventName).length).to.be(0)
+})
+it("cannot register a listener that is not a function", () => {
+    expect(bus.reflect(eventName).length).to.be(0)
+    bus.many(eventName, 1, 1)
+    bus.many(eventName, 1, true)
+    bus.many(eventName, 1, false)
+    bus.many(eventName, 1, "not a function")
+    bus.many(eventName, 1, void 0)
+    bus.many(eventName, 1, null)
+    expect(bus.reflect(eventName).length).to.be(0)
+})
+it("can be mixed into other objects", () => {
+    let myObject = { hello: "world" }
+    let myNewObject = bus.mixin(myObject)
+    expect(myNewObject.hello).to.be(myObject.hello)
+    expect(myNewObject.on).to.a("function")
+    expect(myNewObject.once).to.a("function")
+    expect(myNewObject.many).to.a("function")
+    expect(myNewObject.off).to.a("function")
+    expect(myNewObject.emit).to.a("function")
+    expect(myNewObject.mixin).to.a("function")
+    expect(myNewObject).to.not.be(myObject)
 })

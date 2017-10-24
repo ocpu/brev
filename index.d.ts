@@ -32,15 +32,20 @@ declare interface Brev {
      * @param max The maximum amount of times the listener can be called.
      * @param listener The actual listener to get fired.
      */
-    many(eventName: string, max: number, listener: (event: any) => void): Brev
+    many<T>(eventName: string, max: number, listener: (event: T) => void): Brev
     /**
      * Emit a event to all listeners registered to the given `eventName`.
      *
-     * @param {String} eventName
-     * @param {*} [event]
-     * @returns {void}
+     * @param eventName The event name to execute the event on.
+     * @param event The event to get passed to listeners.
      */
     emit(eventName: string, event?: any): void
+    /**
+     * Mixin this eventbus into another object.
+     * 
+     * @param obj The object to mix into.
+     */
+    mixin<T>(obj: T): T & Brev
 }
 
 declare module "brev" {

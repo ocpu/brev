@@ -13,11 +13,11 @@ function off(listeners, eventName, listener) {
 }
 
 function many(listeners, eventName, max, listener) {
-    if (isFinite(max) && max < 0)
+    if (isFinite(max) && max <= 0)
         return this
     if (!eventName && typeof eventName !== "string")
         return this
-    if (!listener && typeof listener !== "function")
+    if (typeof listener !== "function")
         return this
 
     if (!(eventName in listeners) || !~listeners[eventName].findIndex(search(listener)))
@@ -64,29 +64,25 @@ function emit(listeners, eventName, event) {
     }
 }
 
+function mixin(listeners, object) {
+    var obj = {}
+    for (var key in object) if (object.hasOwnProperty(key)) 
+        Object.defineProperty(obj, key, Object.getOwnPropertyDescriptor(object, key))
+    obj["off"] = off.bind(null, listeners)
+    obj["many"] = many.bind(obj, listeners)
+    obj["once"] = once.bind(null, listeners)
+    obj["on"] = on.bind(obj, listeners)
+    obj["emit"] = emit.bind(null, listeners)
+    obj["reflect"] = reflect.bind(null, listeners)
+    obj["mixin"] = mixin.bind(null, listeners)
+    return obj
+}
+
 function reflect(listeners, eventName) {
     return listeners[eventName] || []
 }
 
 exports.createBus = function createBus() {
     // { [eventName]: [{ executed, max, listener }, ...] }
-    var listeners = {}
-    var bus = {
-        off: off.bind(null, listeners),
-        /**
-         * Registers a handler to the given eventName.
-         * It will only be called x amount of times before it is unregistered.
-         *
-         * @param {String} eventName
-         * @param {Number} timesAvailable
-         * @param {Function} handler
-         * @returns {brev}
-         */
-        many: many.bind(bus, listeners),
-        once: once.bind(null, listeners),
-        on: on.bind(bus, listeners),
-        emit: emit.bind(null, listeners),
-        reflect: reflect.bind(null, listeners)
-    }
-    return bus
+    return mixin({}, {})
 }
