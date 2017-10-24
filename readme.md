@@ -17,7 +17,7 @@
 - [bus.mixin(obj)](#busmixinobj)
 
 ### brev.createBus()
-- Returns: A new event bus
+Returns: A new event bus
 
 Creates a new event bus.
 
