@@ -9,13 +9,12 @@
 ## API
 
 - [brev.createBus()](#brevcreatebus)
-- [Class: Brev](#class-brev)
-    - [bus.on(eventName, handler)](#busoneventname-handler)
-    - [bus.once(eventName[, handler])](#busonceeventname-handler)
-    - [bus.many(eventName, timesAvailable, handler)](#busmanyeventname-timesavailable-handler)
-    - [bus.off(eventName, handler)](#busoffeventname-handler)
-    - [bus.emit(eventName[, event])](#busemiteventname-event)
-    - [bus.mixin(obj)](#busmixinobj)
+- [bus.on(eventName, handler)](#busoneventname-listener)
+- [bus.once(eventName[, handler])](#busonceeventname-listener)
+- [bus.many(eventName, timesAvailable, handler)](#busmanyeventname-max-listener)
+- [bus.off(eventName, handler)](#busoffeventname-listener)
+- [bus.emit(eventName[, event])](#busemiteventname-event)
+- [bus.mixin(obj)](#busmixinobj)
 
 ### brev.createBus()
 - Returns: [\<Brev>](#class-brev) A new event bus
@@ -26,82 +25,91 @@ Creates a new and fresh event bus.
 var bus = brev.createBus()
 ```
 
-### Class: Brev
-Used to create event buses
-
-#### bus.on(eventName, handler)
+### bus.on(eventName, listener)
 |Parameter|Type|Description|
 |-|-|-|
-|`eventName`|[\<String>][mdn-str]|The event name|
-|`handler`|[\<Function>][mdn-fun]|The function handling the event|
+|`eventName`|[\<String>][mdn-str]|The event to listen to.|
+|`listener`|[\<Function>][mdn-fun]|The actual listener to get fired.|
 
-Returns: [\<Brev>](#class-brev) The instance
+Returns: The instance.
 
-Registers a handler to the given eventName.
+Add a listener for the event given on this event bus.
 
 ```js
 function handler(e) {}
 bus.on('connect', handler);
 ```
 
-#### bus.once(eventName, handler)
+### bus.once(eventName, listener)
 |Parameter|Type|Description|
 |-|-|-|
 |`eventName`|[\<String>][mdn-str]|The event name|
-|`handler`|[\<Function>][mdn-fun]|The function handling the event|
+|`listener`|[\<Function>][mdn-fun]|The function handling the event|
 
-Returns: [\<Brev>](#class-brev) The instance
+Returns: [\<Promise\<Result>>][mdn-prm] Promise with the result of the listener or the event.
 
 Registers a handler to the given eventName.
 It will only be called one time before it is unregistered.
+
+It returns a promise containing the event if no listener was registered.
+Otherwise the promise contains the result of the listener.
 
 ```js
 function handler(e) {}
 bus.once('connect', handler);
 ```
 
-#### bus.many(eventName, timesAvailable, handler)
+### bus.many(eventName, max, listener)
 |Parameter|Type|Description|
 |-|-|-|
-|`eventName`|[\<String>][mdn-str]|The event name|
-|`timesAvailable`|[\<Number>][mdn-num]|The event name|
-|`handler`|[\<Function>][mdn-fun]|The function handling the event|
+|`eventName`|[\<String>][mdn-str]|The event to listen to.|
+|`max`|[\<Number>][mdn-num]|The maximum amount of times the listener can be called.|
+|`listener`|[\<Function>][mdn-fun]|The listener to get fired.|
 
-Returns: [\<Brev>](#class-brev) The instance
+Returns: The instance
 
-Registers a handler to the given eventName.
-It will only be called x amount of times before it is unregistered.
+Add a listener for the event given on this event bus.
+It will only be called x amount of times before it is automatically unregistered.
 
 ```js
 function handler(e) {}
 bus.many('connect', 3, handler);
 ```
 
-#### bus.off(eventName, handler)
+### bus.off(eventName, listener)
 |Parameter|Type|Description|
 |-|-|-|
-|`eventName`|[\<String>][mdn-str]|The event name|
-|`handler`|[\<Function>][mdn-fun]|The function handling the event|
+|`eventName`|[\<String>][mdn-str]|The event the listener is registered on.|
+|`listener`|[\<Function>][mdn-fun]|The listener to remove.|
 
-Returns: [\<Brev>](#class-brev) The instance
-
-Unregisters a handler to the given eventName.
+Unregister a listener from the given event.
 
 ```js
 function handler(e) {}
 bus.off('connect', handler)
 ```
 
-#### bus.emit(eventName\[, event])
+### bus.emit(eventName\[, event])
 |Parameter|Type|Description|
 |-|-|-|
-|`eventName`|[\<String>][mdn-str]|The event name|
-|`[event]`|\<Any>|Any kind of value you want to pass to the handler(s)|
+|`eventName`|[\<String>][mdn-str]|The event name to execute the event on.|
+|`[event]`|\<Any>|The event to get passed to listeners.|
 
-Trigger a event to all handlers registered under the given event name.
+Emit a event to all listeners registered to the given `eventName`.
 
 ```js
 bus.emit('connect', { status: 'ok' })
+```
+
+### bus.mixin(obj)
+|Parameter|Type|Description|
+|-|-|-|
+|`obj`|\<Any>|The object to mix into.|
+
+Mixin this eventbus into another object.
+
+```js
+var mixedinObjext = bus.mixin({ hello: 'world' })
 ```
 
 [mdn-str]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
@@ -110,6 +118,7 @@ bus.emit('connect', { status: 'ok' })
 [mdn-obj]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
 [mdn-bol]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 [mdn-arr]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
+[mdn-prm]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
 
 [url-travis]: https://travis-ci.org/ocpu/Brev
 [url-npm]: https://npmjs.org/package/brev
