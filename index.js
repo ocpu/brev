@@ -4,6 +4,8 @@ var brev = (function(){
     var isBrowserEnviornment = typeof window !== 'undefined' && typeof document !== 'undefined',
         supportsServiceWorker = typeof navigator !== 'undefined' && 'serviceWorker' in navigator
 
+    //#region Observable
+    
     function Observeable() {
         this.listeners = []
     }
@@ -48,6 +50,9 @@ var brev = (function(){
         if (~(index = this.getListener(listener)))
             this.listeners.splice(index, 1)
     }
+
+    //#endregion
+    //#region Brev
 
     function Brev() {
         this.__observables = {}
@@ -148,6 +153,8 @@ var brev = (function(){
     Brev.prototype.reflect = function (event) {
         return event in this.__observables ? this.__observables[event] : new Observeable()
     }
+
+    //#endregion
     
     function search(forListener) {
         return function within(item) {
@@ -156,7 +163,6 @@ var brev = (function(){
     }
     
     function createBus() {
-        // { [eventName]: [{ executed, max, listener }, ...] }
         return new Brev
     }
     
