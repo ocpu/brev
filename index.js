@@ -57,17 +57,18 @@ var brev = (function(){
     function Brev() {
         this.__observables = {}
         this.handler = this.handler.bind(this)
-        if (typeof addEventListener === "function")
+        if (typeof registration === "object")
             addEventListener("message", this.handler)
+        else if (isBrowserEnviornment && supportsServiceWorker)
+            navigator.serviceWorker.addEventListener("message", this.handler)
     }
 
     Brev.prototype.__idCounter = 0
 
     Brev.prototype.emit = function (eventName, event, local) {
         var _local = typeof local === 'boolean' ? local : false
-        if (eventName in this.__observables) {
+        if (eventName in this.__observables)
             this.__observables[eventName].emit(event)
-        }
         if (!_local && isBrowserEnviornment) {
             if (!supportsServiceWorker)
                 return
@@ -78,11 +79,12 @@ var brev = (function(){
                 })
             })
         } else if (!_local && typeof clients !== 'undefined') {
-            clients.matchAll().then(function (clientList) {
-                var i = clients.length
-                while (i--) clientList[i].postMessage({
-                    eventName: eventName, 
-                    event: event
+            clients.matchAll().then(function (clients) {
+                clients.forEach(function (client) {
+                    client.postMessage({
+                        eventName: eventName, 
+                        event: event
+                    })
                 })
             })
         }
