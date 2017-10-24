@@ -21,9 +21,9 @@ it('registers a function', () => {
         executed: 0,
         listener: spy1
     }]
-    expect(bus.reflect(eventName)).to.eql([])
+    expect(bus.reflect(eventName).listeners).to.eql([])
     bus.on(eventName, spy1)
-    expect(bus.reflect(eventName)).to.eql(expected)
+    expect(bus.reflect(eventName).listeners).to.eql(expected)
 })
 it('unregisters a function', () => {
     let expected = [{
@@ -31,18 +31,18 @@ it('unregisters a function', () => {
         executed: 0,
         listener: spy1
     }]
-    expect(bus.reflect(eventName)).to.eql([])
+    expect(bus.reflect(eventName).listeners).to.eql([])
     bus.on(eventName, spy1)
-    expect(bus.reflect(eventName)).to.eql(expected)
+    expect(bus.reflect(eventName).listeners).to.eql(expected)
     bus.off(eventName, spy1)
-    expect(bus.reflect(eventName)).to.eql([])
+    expect(bus.reflect(eventName).listeners).to.eql([])
 })
 it('can\'t register a handler twice', () => {
-    expect(bus.reflect(eventName).length).to.be(0)
+    expect(bus.reflect(eventName).listeners.length).to.be(0)
     bus.on(eventName, spy1)
-    expect(bus.reflect(eventName).length).to.be(1)
+    expect(bus.reflect(eventName).listeners.length).to.be(1)
     bus.on(eventName, spy1)
-    expect(bus.reflect(eventName).length).to.be(1)
+    expect(bus.reflect(eventName).listeners.length).to.be(1)
 })
 it('unregisters nothing if the function does not exist', () => {
     let expected = [{
@@ -50,16 +50,16 @@ it('unregisters nothing if the function does not exist', () => {
         executed: 0,
         listener: spy1
     }]
-    expect(bus.reflect(eventName)).to.eql([])
+    expect(bus.reflect(eventName).listeners).to.eql([])
     bus.on(eventName, spy1)
-    expect(bus.reflect(eventName)).to.eql(expected)
+    expect(bus.reflect(eventName).listeners).to.eql(expected)
     bus.off(eventName, spy2)
-    expect(bus.reflect(eventName)).to.eql(expected)
+    expect(bus.reflect(eventName).listeners).to.eql(expected)
 })
 it('unregisters nothing if the event does not exist', () => {
-    expect(bus.reflect(eventName).length).to.be(0)
+    expect(bus.reflect(eventName).listeners.length).to.be(0)
     bus.off(eventName, spy1)
-    expect(bus.reflect(eventName).length).to.be(0)
+    expect(bus.reflect(eventName).listeners.length).to.be(0)
 })
 it('triggers handler', done => {
     bus.on(eventName, event => {
@@ -72,18 +72,18 @@ it('does nothing if the event does not exist', () => {
     bus.emit(eventName, eventValue)
 })
 it('once registers a function', () => {
-    expect(bus.reflect(eventName).length).to.be(0)
+    expect(bus.reflect(eventName).listeners.length).to.be(0)
     bus.once(eventName, spy1)
-    expect(bus.reflect(eventName).length).to.be(1)
+    expect(bus.reflect(eventName).listeners.length).to.be(1)
 })
 it('once registers as an event', () => {
-    expect(bus.reflect(eventName).length).to.be(0)
+    expect(bus.reflect(eventName).listeners.length).to.be(0)
     bus.once(eventName)
-    expect(bus.reflect(eventName).length).to.be(1)
+    expect(bus.reflect(eventName).listeners.length).to.be(1)
 })
-it('once executes with function registered', done => {
-    bus.once(eventName, event => {
-        expect(eventValue).to.be(event)
+it('once executes with function registered', function (done) {
+    bus.once(eventName, function (event) {
+        expect(event).to.be(eventValue)
         done()
     })
     bus.emit(eventName, eventValue)
@@ -104,52 +104,62 @@ it('once listener can throw and get caught in promise', done => {
     bus.emit(eventName, eventValue)
 })
 it('many registers a function', () => {
-    expect(bus.reflect(eventName).length).to.be(0)
+    expect(bus.reflect(eventName).listeners.length).to.be(0)
     bus.many(eventName, 2, spy1)
-    expect(bus.reflect(eventName).length).to.be(1)
+    expect(bus.reflect(eventName).listeners.length).to.be(1)
 })
 it('many executes a function correctly ', () => {
     bus.many(eventName, 2, spy1)
     bus.emit(eventName)
 
     expect(spy1.callCount).to.be(1)
-    expect(bus.reflect(eventName)[0].executed).to.eql(1)
+    expect(bus.reflect(eventName).listeners[0].executed).to.eql(1)
     bus.emit(eventName)
     expect(spy1.callCount).to.be(2)
-    expect(bus.reflect(eventName)).to.eql([])
+    expect(bus.reflect(eventName).listeners).to.eql([])
     bus.emit(eventName)
 })
 it("many max cannot be below or equal to 0", () => {
-    expect(bus.reflect(eventName).length).to.be(0)
+    expect(bus.reflect(eventName).listeners.length).to.be(0)
     bus.many(eventName, 0, () => {})
     bus.many(eventName, -1, () => {})
     bus.many(eventName, -1000, () => {})
-    expect(bus.reflect(eventName).length).to.be(0)
+    expect(bus.reflect(eventName).listeners.length).to.be(0)
 })
 it("cannot register with a empty event string", () => {
-    expect(bus.reflect(eventName).length).to.be(0)
-    bus.many("", 1, () => {})
-    expect(bus.reflect(eventName).length).to.be(0)
+    expect(()=>bus.many("", 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.on("", 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.once("", 1, () => {})).to.throwError(/event must me something/)
 })
 it("cannot register on event that is not a string", () => {
-    expect(bus.reflect(eventName).length).to.be(0)
-    bus.many(1, 1, () => {})
-    bus.many(true, 1, () => {})
-    bus.many(false, 1, () => {})
-    bus.many(() => {}, 1, () => {})
-    bus.many(void 0, 1, () => {})
-    bus.many(null, 1, () => {})
-    expect(bus.reflect(eventName).length).to.be(0)
+    expect(()=>bus.many(1, 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.many(null, 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.many(true, 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.many(() => {}, 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.many(void 0, 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.many(null, 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.on(1, 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.on(null, 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.on(true, 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.on(() => {}, 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.on(void 0, 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.on(null, 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.once(1, 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.once(null, 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.once(true, 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.once(() => {}, 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.once(void 0, 1, () => {})).to.throwError(/event must me something/)
+    expect(()=>bus.once(null, 1, () => {})).to.throwError(/event must me something/)
 })
 it("cannot register a listener that is not a function", () => {
-    expect(bus.reflect(eventName).length).to.be(0)
+    expect(bus.reflect(eventName).listeners.length).to.be(0)
     bus.many(eventName, 1, 1)
     bus.many(eventName, 1, true)
     bus.many(eventName, 1, false)
     bus.many(eventName, 1, "not a function")
     bus.many(eventName, 1, void 0)
     bus.many(eventName, 1, null)
-    expect(bus.reflect(eventName).length).to.be(0)
+    expect(bus.reflect(eventName).listeners.length).to.be(0)
 })
 it("can be mixed into other objects", () => {
     let myObject = { hello: "world" }

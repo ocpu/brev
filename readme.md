@@ -4,16 +4,21 @@
 [![License][img-license]][url-license]
 [![codecov][img-cc]][url-cc]
 
-##
+This is a event bus system that primarily sends and recives events. You are able to create
+new event busses and mix them into other objects. This script also works client side. But 
+client side you also have the capabillity to comunicate with all instances running your site
+plus the registered service worker. You can easily send to the current instance with a flag 
+at the end of your emit call to true and the event will not happen on the service worker 
+neither other local tabs/instances.
 
 ## API
 
 - [brev.createBus()](#brevcreatebus)
-- [bus.on(eventName, handler)](#busoneventname-listener)
-- [bus.once(eventName[, handler])](#busonceeventname-listener)
-- [bus.many(eventName, timesAvailable, handler)](#busmanyeventname-max-listener)
-- [bus.off(eventName, handler)](#busoffeventname-listener)
-- [bus.emit(eventName[, event])](#busemiteventname-event)
+- [bus.on(eventName, listener)](#busoneventname-listener)
+- [bus.once(eventName[, listener])](#busonceeventname-listener)
+- [bus.many(eventName, max, listener)](#busmanyeventname-max-listener)
+- [bus.off(eventName, listener)](#busoffeventname-listener)
+- [bus.emit(eventName[, event][, local])](#busemiteventname-event-local)
 - [bus.mixin(obj)](#busmixinobj)
 
 ### brev.createBus()
@@ -24,7 +29,7 @@ Creates a new event bus.
 ```js
 var brev = require("brev")
 // es2015 destructuring
-const { createBus } = require("brev")
+const { bus: globalBus createBus } = require("brev")
 var bus = brev.createBus()
 ```
 
@@ -92,11 +97,12 @@ function handler(e) {}
 bus.off('connect', handler)
 ```
 
-### bus.emit(eventName\[, event])
+### bus.emit(eventName\[, event][, local])
 |Parameter|Type|Description|
 |-|-|-|
 |`eventName`|[\<String>][mdn-str]|The event name to execute the event on.|
 |`[event]`|\<Any>|The event to get passed to listeners.|
+|`[local]`|[\<Boolean>][mdn-bol]|Restrict to only local tab/instance. Default is false.|
 
 Emit a event to all listeners registered to the given `eventName`.
 

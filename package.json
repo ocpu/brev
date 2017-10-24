@@ -23,6 +23,5 @@
     "events",
     "eventbus"
   ],
-  "license": "MIT",
-  "unpkg": "dist/brev.min.js"
+  "license": "MIT"
 }

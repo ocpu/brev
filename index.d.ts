@@ -38,8 +38,9 @@ declare interface Brev {
      *
      * @param eventName The event name to execute the event on.
      * @param event The event to get passed to listeners.
+     * @param local Restrict to only local tab/instance. Default is false.
      */
-    emit(eventName: string, event?: any): void
+    emit(eventName: string, event?: any, local?: boolean): void
     /**
      * Mixin this eventbus into another object.
      * 
