@@ -17,11 +17,14 @@
 - [bus.mixin(obj)](#busmixinobj)
 
 ### brev.createBus()
-- Returns: [\<Brev>](#class-brev) A new event bus
+- Returns: A new event bus
 
-Creates a new and fresh event bus.
+Creates a new event bus.
 
 ```js
+var brev = require("brev")
+// es2015 destructuring
+const { createBus } = require("brev")
 var bus = brev.createBus()
 ```
 
