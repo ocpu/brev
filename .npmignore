@@ -6,4 +6,5 @@ docs/
 .travis.yml
 .gitignore
 bower.json
+.eslintrc*
 CNAME
