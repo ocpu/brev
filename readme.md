@@ -29,7 +29,7 @@ Creates a new event bus.
 ```js
 var brev = require("brev")
 // es2015 destructuring
-const { bus: globalBus createBus } = require("brev")
+const { bus: globalBus, createBus } = require("brev")
 var bus = brev.createBus()
 ```
 
