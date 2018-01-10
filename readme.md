@@ -1,4 +1,4 @@
-[![Build Status][img-travis]][url-travis]
+[![CircleCI](https://img.shields.io/circleci/project/github/ocpu/brev.svg?style=flat-square)](https://circleci.com/gh/ocpu/brev)
 [![NPM version][img-npm]][url-npm]
 [![NPM Downloads][img-downloads]][url-downloads]
 [![License][img-license]][url-license]
