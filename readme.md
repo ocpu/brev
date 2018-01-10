@@ -16,7 +16,7 @@ neither other local tabs/instances.
 - [bus.on(topic, listener)](#busoneventname-listener)
 - [bus.once(topic[, listener])](#busonceeventname-listener)
 - [bus.many(topic, max, listener)](#busmanyeventname-max-listener)
-- [bus.observe(topic)](#busobserveeventname)
+- [bus.observe(topic)](#busobservetopic)
 - [bus.off(topic, listener)](#busoffeventname-listener)
 - [bus.emit(topic[, event][, local])](#busemiteventname-event-local)
 - [bus.mixin(obj)](#busmixinobj)
