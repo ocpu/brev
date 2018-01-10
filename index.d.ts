@@ -1,62 +1,90 @@
+declare interface BrevObservabe<E> {
+    /**
+     * Choose what values are proceded in the chain.
+     * @param predicate 
+     */
+    filter(predicate: (obj: E) => boolean): BrevObservabe<E>
+    /**
+     * Transform the value to a different value.
+     * @param transformer 
+     */
+    map<R>(transformer: (obj: E) => R): BrevObservabe<R>
+    /**
+     * Run a handler with the current value.
+     * @param handler What you want to do the the event.
+     */
+    run(handler: (obj: E) => void): BrevObservabe<E>
+    /**
+     * Unobserve the observer.
+     */
+    unobserve()
+}
+
 declare interface Brev {
     /**
      * Add a listener for the event given on this event bus.
      * 
-     * @param eventName The event to listen to.
+     * @param topic The event to listen to.
      * @param listener The actual listener to get fired.
      */
-    on<T>(eventName: string, listener: (event: T) => void): Brev
+    on<T>(topic: string, listener: (event: T) => void): Brev
     /**
      * Unregister a listener from the given event.
      *
-     * @param eventName The event the listener is registered on.
+     * @param topic The event the listener is registered on.
      * @param listener The listener to remove. 
      */
-    off<T>(eventName: string, listener: (event: T) => void): void
+    off<T>(topic: string, listener: (event: T) => void): Brev
     /**
-     * Registers a handler to the given eventName.
+     * Registers a handler to the given topic.
      * It will only be called one time before it is unregistered.
      * 
      * It returns a promise containing the event if no listener was registered.
      * Otherwise the promise contains the result of the listener.
      *
-     * @param eventName The event to listen to.
+     * @param topic The event to listen to.
      * @param listener The actual listener to get fired.
      */
-    once<T, Result>(eventName: string, listener?: (event: T) => Result): Promise<Result>
+    once<T, Result>(topic: string, listener?: (event: T) => Result): Promise<Result>
     /**
      * Add a listener for the event given on this event bus.
      * It will only be called x amount of times before it is automatically unregistered.
      * 
-     * @param eventName The event to listen to.
+     * @param topic The event to listen to.
      * @param max The maximum amount of times the listener can be called.
      * @param listener The actual listener to get fired.
      */
-    many<T>(eventName: string, max: number, listener: (event: T) => void): Brev
+    many<T>(topic: string, max: number, listener: (event: T) => void): Brev
     /**
-     * Emit a event to all listeners registered to the given `eventName`.
+     * Emit a event to all listeners registered to the given `topic`.
      *
-     * @param eventName The event name to execute the event on.
+     * @param topic The event name to execute the event on.
      * @param event The event to get passed to listeners.
      * @param local Restrict to only local tab/instance. Default is false.
      */
-    emit(eventName: string, event?: any, local?: boolean): void
+    emit(topic: string, event?: any, local?: boolean): void
     /**
      * Mixin this eventbus into another object.
      * 
      * @param obj The object to mix into.
      */
-    mixin<T>(obj: T): T & Brev
+    mixin<T>(obj: T): T | Brev
+    /**
+     * Register a observer on a topic.
+     * @param topic The topic to observe.
+     */
+    observe<E>(topic: string): BrevObservabe<E>
+    /**
+     * Register a observer on a topic.
+     * @param topic The topic to observe.
+     */
+    observe(event: string): BrevObservabe<any>
 }
+
+declare var createBus: { (): Brev } & Brev
 
 declare module "brev" {
-    /**
-     * Creates a new and fresh event bus.
-     */
-    export function createBus(): Brev
+    export = createBus
 }
 
-/**
- * Creates a new and fresh event bus.
- */
-export function createBus(): Brev
+export = createBus

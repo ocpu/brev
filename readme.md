@@ -2,7 +2,6 @@
 [![NPM version][img-npm]][url-npm]
 [![NPM Downloads][img-downloads]][url-downloads]
 [![License][img-license]][url-license]
-[![codecov][img-cc]][url-cc]
 
 This is a event bus system that primarily sends and recives events. You are able to create
 new event busses and mix them into other objects. This script also works client side. But 
@@ -14,11 +13,12 @@ neither other local tabs/instances.
 ## API
 
 - [brev.createBus()](#brevcreatebus)
-- [bus.on(eventName, listener)](#busoneventname-listener)
-- [bus.once(eventName[, listener])](#busonceeventname-listener)
-- [bus.many(eventName, max, listener)](#busmanyeventname-max-listener)
-- [bus.off(eventName, listener)](#busoffeventname-listener)
-- [bus.emit(eventName[, event][, local])](#busemiteventname-event-local)
+- [bus.on(topic, listener)](#busoneventname-listener)
+- [bus.once(topic[, listener])](#busonceeventname-listener)
+- [bus.many(topic, max, listener)](#busmanyeventname-max-listener)
+- [bus.observe(topic)](#busobserveeventname)
+- [bus.off(topic, listener)](#busoffeventname-listener)
+- [bus.emit(topic[, event][, local])](#busemiteventname-event-local)
 - [bus.mixin(obj)](#busmixinobj)
 
 ### brev.createBus()
@@ -27,16 +27,15 @@ Returns: A new event bus
 Creates a new event bus.
 
 ```js
-var brev = require("brev")
-// es2015 destructuring
-const { bus: globalBus createBus } = require("brev")
+const brev = require("brev")
+var globalBus = brev
 var bus = brev.createBus()
 ```
 
-### bus.on(eventName, listener)
+### bus.on(topic, listener)
 |Parameter|Type|Description|
 |-|-|-|
-|`eventName`|[\<String>][mdn-str]|The event to listen to.|
+|`topic`|[\<String>][mdn-str]|The event to listen to.|
 |`listener`|[\<Function>][mdn-fun]|The actual listener to get fired.|
 
 Returns: The instance.
@@ -48,15 +47,15 @@ function handler(e) {}
 bus.on('connect', handler);
 ```
 
-### bus.once(eventName, listener)
+### bus.once(topic, listener)
 |Parameter|Type|Description|
 |-|-|-|
-|`eventName`|[\<String>][mdn-str]|The event name|
+|`topic`|[\<String>][mdn-str]|The event name|
 |`listener`|[\<Function>][mdn-fun]|The function handling the event|
 
 Returns: [\<Promise\<Result>>][mdn-prm] Promise with the result of the listener or the event.
 
-Registers a handler to the given eventName.
+Registers a handler to the given topic.
 It will only be called one time before it is unregistered.
 
 It returns a promise containing the event if no listener was registered.
@@ -67,10 +66,10 @@ function handler(e) {}
 bus.once('connect', handler);
 ```
 
-### bus.many(eventName, max, listener)
+### bus.many(topic, max, listener)
 |Parameter|Type|Description|
 |-|-|-|
-|`eventName`|[\<String>][mdn-str]|The event to listen to.|
+|`topic`|[\<String>][mdn-str]|The event to listen to.|
 |`max`|[\<Number>][mdn-num]|The maximum amount of times the listener can be called.|
 |`listener`|[\<Function>][mdn-fun]|The listener to get fired.|
 
@@ -84,10 +83,33 @@ function handler(e) {}
 bus.many('connect', 3, handler);
 ```
 
-### bus.off(eventName, listener)
+### bus.observe(topic)
 |Parameter|Type|Description|
 |-|-|-|
-|`eventName`|[\<String>][mdn-str]|The event the listener is registered on.|
+|`topic`|[\<String>][mdn-str]|The event to listen to.|
+
+Returns: A object with some methods.
+
+Register a observer on a topic.
+
+You can filter the events with the `filter` method, transform the value with `map` and 
+access the value with `run`. 
+
+To unregister the observer call `unobserve`.
+
+```js
+bus.observe('connect')
+    .filter(e => typeof e === 'string')
+    .map(e => e.toLowerCase())
+    .run(e => {
+        console.log(e)
+    })
+```
+
+### bus.off(topic, listener)
+|Parameter|Type|Description|
+|-|-|-|
+|`topic`|[\<String>][mdn-str]|The event the listener is registered on.|
 |`listener`|[\<Function>][mdn-fun]|The listener to remove.|
 
 Unregister a listener from the given event.
@@ -97,14 +119,14 @@ function handler(e) {}
 bus.off('connect', handler)
 ```
 
-### bus.emit(eventName\[, event][, local])
+### bus.emit(topic\[, event][, local])
 |Parameter|Type|Description|
 |-|-|-|
-|`eventName`|[\<String>][mdn-str]|The event name to execute the event on.|
+|`topic`|[\<String>][mdn-str]|The event name to execute the event on.|
 |`[event]`|\<Any>|The event to get passed to listeners.|
 |`[local]`|[\<Boolean>][mdn-bol]|Restrict to only local tab/instance. Default is false.|
 
-Emit a event to all listeners registered to the given `eventName`.
+Emit a event to all listeners registered to the given `topic`.
 
 ```js
 bus.emit('connect', { status: 'ok' })

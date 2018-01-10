@@ -1,24 +1,57 @@
 {
     "env": {
-        "browser": false,
-        "commonjs": false,
-        "es6": false,
-        "node": true
+      "browser": true,
+      "commonjs": true,
+      "es6": true,
+      "node": true
     },
     "parserOptions": {
-        "ecmaVersion": 2017,
-        "ecmaFeatures": {
-            "jsx": false
-        },
-        "sourceType": "module"
+      "extends": "eslint:recommended",
+      "ecmaVersion": 2017,
+      "ecmaFeatures": {
+        "jsx": false
+      }
     },
     "rules": {
-        "no-const-assign": "warn",
-        "no-this-before-super": "warn",
-        "no-undef": "off",
-        "no-unreachable": "warn",
-        "no-unused-vars": "warn",
-        "constructor-super": "warn",
-        "valid-typeof": "warn"
+      "no-const-assign": "warn",
+      "no-this-before-super": "warn",
+      "no-undef": "warn",
+      "no-unreachable": "warn",
+      "no-unused-vars": "warn",
+      "constructor-super": "warn",
+      "valid-typeof": "warn",
+      "arrow-spacing": "warn",
+      "eol-last": "warn",
+      "eqeqeq": "error",
+      "no-with": "error",
+      "strict": ["error", "safe"],
+      "prefer-spread": "warn",
+      "yield-star-spacing": ["error", "after"],
+      "indent": [
+        "error",
+        2,
+        {
+          "SwitchCase": 1,
+          "outerIIFEBody": 0,
+          "VariableDeclarator": {
+            "var": 2,
+            "let": 2,
+            "const": 3
+          },
+          "FunctionDeclaration": {
+            "body": 1,
+            "parameters": 2
+          },
+          "CallExpression": {
+            "arguments": 1
+          },
+          "flatTernaryExpressions": true
+        }
+      ],
+      "no-extra-semi": "warn",
+      "no-unneeded-ternary": "warn",
+      "no-alert": "error",
+      "no-console": ["warn", { "allow": ["log", "warn", "error"] }],
+      "camelcase": ["error", { "properties": "never" }]
     }
-}
+  }

@@ -1,175 +1,194 @@
-require('tap').mochaGlobals()
-const sinon = require('sinon')
-const expect = require('expect.js')
-const { createBus } = require('../')
+'use strict'
+/* global beforeEach it */
+
+const createBus = require('../')
 
 let bus = createBus()
 const eventName = 'some event'
 const eventValue = 'some value'
-let spy1 = sinon.spy(),
-    spy2 = sinon.spy()
+let mock1 = jest.fn(),
+    mock2 = jest.fn()
 
 beforeEach(() => {
-    bus = createBus()
-    spy1 = sinon.spy()
-    spy2 = sinon.spy()
+  bus = createBus()
+  mock1 = jest.fn()
+  mock2 = jest.fn()
 })
 
 it('registers a function', () => {
-    let expected = [{
-        max: Infinity,
-        executed: 0,
-        listener: spy1
-    }]
-    expect(bus.reflect(eventName).listeners).to.eql([])
-    bus.on(eventName, spy1)
-    expect(bus.reflect(eventName).listeners).to.eql(expected)
+  let expected = [mock1]
+  expect(bus.reflect(eventName)).toEqual([])
+  bus.on(eventName, mock1)
+  expect(bus.reflect(eventName)).toEqual(expected)
 })
 it('unregisters a function', () => {
-    let expected = [{
-        max: Infinity,
-        executed: 0,
-        listener: spy1
-    }]
-    expect(bus.reflect(eventName).listeners).to.eql([])
-    bus.on(eventName, spy1)
-    expect(bus.reflect(eventName).listeners).to.eql(expected)
-    bus.off(eventName, spy1)
-    expect(bus.reflect(eventName).listeners).to.eql([])
+  let expected = [mock1]
+  expect(bus.reflect(eventName)).toEqual([])
+  bus.on(eventName, mock1)
+  expect(bus.reflect(eventName)).toEqual(expected)
+  bus.off(eventName, mock1)
+  expect(bus.reflect(eventName)).toEqual([])
 })
 it('can\'t register a handler twice', () => {
-    expect(bus.reflect(eventName).listeners.length).to.be(0)
-    bus.on(eventName, spy1)
-    expect(bus.reflect(eventName).listeners.length).to.be(1)
-    bus.on(eventName, spy1)
-    expect(bus.reflect(eventName).listeners.length).to.be(1)
+  expect(bus.reflect(eventName).length).toBe(0)
+  bus.on(eventName, mock1)
+  expect(bus.reflect(eventName).length).toBe(1)
+  bus.on(eventName, mock1)
+  expect(bus.reflect(eventName).length).toBe(1)
 })
 it('unregisters nothing if the function does not exist', () => {
-    let expected = [{
-        max: Infinity,
-        executed: 0,
-        listener: spy1
-    }]
-    expect(bus.reflect(eventName).listeners).to.eql([])
-    bus.on(eventName, spy1)
-    expect(bus.reflect(eventName).listeners).to.eql(expected)
-    bus.off(eventName, spy2)
-    expect(bus.reflect(eventName).listeners).to.eql(expected)
+  let expected = [mock1]
+  expect(bus.reflect(eventName)).toEqual([])
+  bus.on(eventName, mock1)
+  expect(bus.reflect(eventName)).toEqual(expected)
+  bus.off(eventName, mock2)
+  expect(bus.reflect(eventName)).toEqual(expected)
 })
 it('unregisters nothing if the event does not exist', () => {
-    expect(bus.reflect(eventName).listeners.length).to.be(0)
-    bus.off(eventName, spy1)
-    expect(bus.reflect(eventName).listeners.length).to.be(0)
+  expect(bus.reflect(eventName).length).toBe(0)
+  bus.off(eventName, mock1)
+  expect(bus.reflect(eventName).length).toBe(0)
 })
 it('triggers handler', done => {
-    bus.on(eventName, event => {
-        expect(eventValue).to.be(event)
-        done()
-    })
-    bus.emit(eventName, eventValue)
+  bus.on(eventName, event => {
+    expect(eventValue).toBe(event)
+    done()
+  })
+  bus.emit(eventName, eventValue)
 })
 it('does nothing if the event does not exist', () => {
-    bus.emit(eventName, eventValue)
+  bus.emit(eventName, eventValue)
 })
 it('once registers a function', () => {
-    expect(bus.reflect(eventName).listeners.length).to.be(0)
-    bus.once(eventName, spy1)
-    expect(bus.reflect(eventName).listeners.length).to.be(1)
+  expect(bus.reflect(eventName).length).toBe(0)
+  bus.once(eventName, mock1)
+  expect(bus.reflect(eventName).length).toBe(1)
 })
 it('once registers as an event', () => {
-    expect(bus.reflect(eventName).listeners.length).to.be(0)
-    bus.once(eventName)
-    expect(bus.reflect(eventName).listeners.length).to.be(1)
+  expect(bus.reflect(eventName).length).toBe(0)
+  bus.once(eventName)
+  expect(bus.reflect(eventName).length).toBe(1)
 })
 it('once executes with function registered', function (done) {
-    bus.once(eventName, function (event) {
-        expect(event).to.be(eventValue)
-        done()
-    })
-    bus.emit(eventName, eventValue)
+  bus.once(eventName, function (event) {
+    expect(event).toBe(eventValue)
+    done()
+  })
+  bus.emit(eventName, eventValue)
 })
 it('once executes with with no function specified', done => {
-    bus.once(eventName).then(spy1).then(() => {
-        expect(spy1.args[0][0]).to.be(eventValue)
-        done()
-    })
-    bus.emit(eventName, eventValue)
+  bus.once(eventName).then(mock1).then(() => {
+    expect(mock1.mock.calls.length).toBe(1)
+    expect(mock1.mock.calls[0][0]).toBe(eventValue)
+    done()
+  })
+  bus.emit(eventName, eventValue)
 })
 it('once listener can throw and get caught in promise', done => {
-    bus.once(eventName, () => {
-        throw new Error
-    }).then(done, () => {
-        done()
-    })
-    bus.emit(eventName, eventValue)
+  bus.once(eventName, () => {
+    throw new Error
+  }).then(done, () => {
+    done()
+  })
+  bus.emit(eventName, eventValue)
 })
 it('many registers a function', () => {
-    expect(bus.reflect(eventName).listeners.length).to.be(0)
-    bus.many(eventName, 2, spy1)
-    expect(bus.reflect(eventName).listeners.length).to.be(1)
+  expect(bus.reflect(eventName).length).toBe(0)
+  bus.many(eventName, 2, mock1)
+  expect(bus.reflect(eventName).length).toBe(1)
 })
 it('many executes a function correctly ', () => {
-    bus.many(eventName, 2, spy1)
-    bus.emit(eventName)
-
-    expect(spy1.callCount).to.be(1)
-    expect(bus.reflect(eventName).listeners[0].executed).to.eql(1)
-    bus.emit(eventName)
-    expect(spy1.callCount).to.be(2)
-    expect(bus.reflect(eventName).listeners).to.eql([])
-    bus.emit(eventName)
+  bus.many(eventName, 2, mock1)
+  expect(mock1.mock.calls.length).toBe(0)
+  expect(bus.reflect(eventName).length).toEqual(1)
+  bus.emit(eventName)
+  expect(mock1.mock.calls.length).toBe(1)
+  expect(bus.reflect(eventName).length).toEqual(1)
+  bus.emit(eventName)
+  expect(mock1.mock.calls.length).toBe(2)
+  expect(bus.reflect(eventName).length).toEqual(0)
+  bus.emit(eventName)
 })
 it("many max cannot be below or equal to 0", () => {
-    expect(bus.reflect(eventName).listeners.length).to.be(0)
-    bus.many(eventName, 0, () => {})
-    bus.many(eventName, -1, () => {})
-    bus.many(eventName, -1000, () => {})
-    expect(bus.reflect(eventName).listeners.length).to.be(0)
+  expect(() => bus.many(eventName, 0, () => {})).toThrow(/max must be above 0/)
+  expect(() => bus.many(eventName, -1, () => {})).toThrow(/max must be above 0/)
+  expect(() => bus.many(eventName, -1000, () => {})).toThrow(/max must be above 0/)
 })
 it("cannot register with a empty event string", () => {
-    expect(()=>bus.many("", 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.on("", 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.once("", 1, () => {})).to.throwError(/event must me something/)
+  expect(() => bus.many("", 1, () => {})).toThrow(/event must me something/)
+  expect(() => bus.on("", 1, () => {})).toThrow(/event must me something/)
+  expect(bus.once("", 1, () => {})).rejects.toThrow(/event must me something/)
 })
 it("cannot register on event that is not a string", () => {
-    expect(()=>bus.many(1, 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.many(null, 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.many(true, 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.many(() => {}, 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.many(void 0, 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.many(null, 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.on(1, 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.on(null, 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.on(true, 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.on(() => {}, 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.on(void 0, 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.on(null, 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.once(1, 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.once(null, 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.once(true, 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.once(() => {}, 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.once(void 0, 1, () => {})).to.throwError(/event must me something/)
-    expect(()=>bus.once(null, 1, () => {})).to.throwError(/event must me something/)
+  expect(() => bus.many(1, 1, () => {})).toThrow(/event must me something/)
+  expect(() => bus.many(null, 1, () => {})).toThrow(/event must me something/)
+  expect(() => bus.many(true, 1, () => {})).toThrow(/event must me something/)
+  expect(() => bus.many(() => {}, 1, () => {})).toThrow(/event must me something/)
+  expect(() => bus.many(void 0, 1, () => {})).toThrow(/event must me something/)
+  expect(() => bus.many(null, 1, () => {})).toThrow(/event must me something/)
+  expect(() => bus.on(1, 1, () => {})).toThrow(/event must me something/)
+  expect(() => bus.on(null, 1, () => {})).toThrow(/event must me something/)
+  expect(() => bus.on(true, 1, () => {})).toThrow(/event must me something/)
+  expect(() => bus.on(() => {}, 1, () => {})).toThrow(/event must me something/)
+  expect(() => bus.on(void 0, 1, () => {})).toThrow(/event must me something/)
+  expect(() => bus.on(null, 1, () => {})).toThrow(/event must me something/)
+  expect(bus.once(1, 1, () => {})).rejects.toThrow(/event must me something/)
+  expect(bus.once(null, 1, () => {})).rejects.toThrow(/event must me something/)
+  expect(bus.once(true, 1, () => {})).rejects.toThrow(/event must me something/)
+  expect(bus.once(() => {}, 1, () => {})).rejects.toThrow(/event must me something/)
+  expect(bus.once(void 0, 1, () => {})).rejects.toThrow(/event must me something/)
+  expect(bus.once(null, 1, () => {})).rejects.toThrow(/event must me something/)
 })
 it("cannot register a listener that is not a function", () => {
-    expect(bus.reflect(eventName).listeners.length).to.be(0)
-    bus.many(eventName, 1, 1)
-    bus.many(eventName, 1, true)
-    bus.many(eventName, 1, false)
-    bus.many(eventName, 1, "not a function")
-    bus.many(eventName, 1, void 0)
-    bus.many(eventName, 1, null)
-    expect(bus.reflect(eventName).listeners.length).to.be(0)
+  expect(bus.reflect(eventName).length).toBe(0)
+  bus.on(eventName, 1)
+  bus.on(eventName, true)
+  bus.on(eventName, false)
+  bus.on(eventName, "not a function")
+  bus.on(eventName, void 0)
+  bus.on(eventName, null)
+  expect(bus.reflect(eventName).length).toBe(0)
 })
 it("can be mixed into other objects", () => {
-    let myObject = { hello: "world" }
-    let myNewObject = bus.mixin(myObject)
-    expect(myNewObject.hello).to.be(myObject.hello)
-    expect(myNewObject.on).to.a("function")
-    expect(myNewObject.once).to.a("function")
-    expect(myNewObject.many).to.a("function")
-    expect(myNewObject.off).to.a("function")
-    expect(myNewObject.emit).to.a("function")
-    expect(myNewObject.mixin).to.a("function")
-    expect(myNewObject).to.not.be(myObject)
+  let myObject = { hello: "world" }
+  let myNewObject = bus.mixin(myObject)
+  expect(myNewObject.hello).toBe(myObject.hello)
+  expect(typeof myNewObject.on).toBe('function')
+  expect(typeof myNewObject.once).toBe('function')
+  expect(typeof myNewObject.many).toBe('function')
+  expect(typeof myNewObject.off).toBe('function')
+  expect(typeof myNewObject.emit).toBe('function')
+  expect(typeof myNewObject.mixin).toBe('function')
+})
+
+it('events can be observed', () => {
+  expect(bus.observe(eventName)).toBeDefined()
+})
+it('observed events gets called', () => {
+  bus.observe(eventName).run(mock1)
+  expect(mock1).not.toBeCalled()
+  bus.emit(eventName, eventValue)
+  expect(mock1).toBeCalled()
+})
+it('events can be observed and filtered', () => {
+  bus.observe(eventName).filter(mock1.mockReturnValue(false).mockReturnValueOnce(true)).run(mock2)
+  bus.emit(eventName, eventValue)
+  bus.emit(eventName, eventValue)
+  expect(mock1.mock.calls).toEqual([[eventValue], [eventValue]])
+  expect(mock2.mock.calls).toEqual([[eventValue]])
+})
+it('events can be observed and mapped to new values', () => {
+  bus.observe(eventName).map(mock1.mockReturnValue(eventValue+eventValue).mockReturnValueOnce(eventValue.toLowerCase())).run(mock2)
+  bus.emit(eventName, eventValue)
+  bus.emit(eventName, eventValue)
+  expect(mock1.mock.calls).toEqual([[eventValue], [eventValue]])
+  expect(mock2.mock.calls).toEqual([[eventValue.toLowerCase()], [eventValue+eventValue]])
+})
+it('observers can unregister themselves', () => {
+  var observer = bus.observe(eventName).run(mock1)
+  bus.emit(eventName, eventValue)
+  expect(mock1).toHaveBeenCalledTimes(1)
+  observer.unobserve()
+  bus.emit(eventName, eventValue)
+  expect(mock1).toHaveBeenCalledTimes(1)
 })

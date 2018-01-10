@@ -5,15 +5,10 @@
   "main": "index.js",
   "author": "Martin Hövre <sickan843@live.se>",
   "tonicExampleFilename": "example.js",
-  "devDependencies": {
-    "expect.js": "^0.3.1",
-    "mocha": "^3.2.0",
-    "sinon": "^1.17.7",
-    "tap": "^10.3.2"
-  },
+  "devDependencies": {},
   "scripts": {
-    "test": "tap test/*.js --cov",
-    "posttest": "tap --coverage-report=text-summary"
+    "test": "jest test/*.js",
+    "watch": "jest --watch test/*.test.js"
   },
   "repository": "ocpu/Brev",
   "bugs": "https://github.com/PoroShadows/Brev/issues",
@@ -23,5 +18,8 @@
     "events",
     "eventbus"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "jest": "^22.0.5"
+  }
 }
