@@ -1,24 +1,24 @@
-[![CircleCI](https://img.shields.io/circleci/project/github/ocpu/brev.svg?style=flat-square)](https://circleci.com/gh/ocpu/brev)
+[![CircleCI][img-circle]][url-circle]
 [![NPM version][img-npm]][url-npm]
 [![NPM Downloads][img-downloads]][url-downloads]
 [![License][img-license]][url-license]
 
 This is a event bus system that primarily sends and recives events. You are able to create
-new event busses and mix them into other objects. This script also works client side. But 
-client side you also have the capabillity to comunicate with all instances running your site
-plus the registered service worker. You can easily send to the current instance with a flag 
-at the end of your emit call to true and the event will not happen on the service worker 
-neither other local tabs/instances.
+new event busses and mix them into other objects. This script also works in a web page. While
+in a web page you have the capabillity to comunicate to the running service worker and the 
+from the serviceworker to all active tabs not across browsers. To not broadcast the event to 
+the serviceworker or tabs use the `emitLocal`.
 
 ## API
 
 - [brev.createBus()](#brevcreatebus)
-- [bus.on(topic, listener)](#busoneventname-listener)
-- [bus.once(topic[, listener])](#busonceeventname-listener)
-- [bus.many(topic, max, listener)](#busmanyeventname-max-listener)
+- [bus.on(topic, listener)](#busontopic-listener)
+- [bus.once(topic[, listener])](#busoncetopic-listener)
+- [bus.many(topic, max, listener)](#busmanytopic-max-listener)
 - [bus.observe(topic)](#busobservetopic)
-- [bus.off(topic, listener)](#busoffeventname-listener)
-- [bus.emit(topic[, event][, local])](#busemiteventname-event-local)
+- [bus.off(topic, listener)](#busofftopic-listener)
+- [bus.emit(topic[, event])](#busemittopic-event)
+- [bus.emitLocal(topic[, event])](#busemitlocaltopic-event)
 - [bus.mixin(obj)](#busmixinobj)
 
 ### brev.createBus()
@@ -119,17 +119,29 @@ function handler(e) {}
 bus.off('connect', handler)
 ```
 
-### bus.emit(topic\[, event][, local])
+### bus.emit(topic\[, event])
+|Parameter|Type|Description|
+|-|-|-|
+|`topic`|[\<String>][mdn-str]|The event name to execute the event on.|
+|`[event]`|\<Any>|The event to get passed to listeners.|
+
+Emit a event to all listeners registered to the given `topic`.
+
+```js
+bus.emit('connect', { status: 'ok' })
+```
+
+### bus.emitLocal(topic\[, event])
 |Parameter|Type|Description|
 |-|-|-|
 |`topic`|[\<String>][mdn-str]|The event name to execute the event on.|
 |`[event]`|\<Any>|The event to get passed to listeners.|
 |`[local]`|[\<Boolean>][mdn-bol]|Restrict to only local tab/instance. Default is false.|
 
-Emit a event to all listeners registered to the given `topic`.
+Emit a event to all listeners registered to the given `topic` locally.
 
 ```js
-bus.emit('connect', { status: 'ok' })
+bus.emitLocal('connect', { status: 'ok' })
 ```
 
 ### bus.mixin(obj)
@@ -151,13 +163,13 @@ var mixedinObjext = bus.mixin({ hello: 'world' })
 [mdn-arr]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
 [mdn-prm]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
 
-[url-travis]: https://travis-ci.org/ocpu/Brev
+[url-circle]: https://circleci.com/gh/ocpu/brev
 [url-npm]: https://npmjs.org/package/brev
 [url-license]: lisense.md
 [url-downloads]: https://npmjs.org/package/brev
 [url-cc]: https://codecov.io/gh/ocpu/Brev
 
-[img-travis]: https://img.shields.io/travis/ocpu/Brev.svg?style=flat-square
+[img-circle]: https://img.shields.io/circleci/project/github/ocpu/brev.svg?style=flat-square
 [img-npm]: https://img.shields.io/npm/v/brev.svg?style=flat-square
 [img-license]: https://img.shields.io/npm/l/brev.svg?style=flat-square
 [img-downloads]: https://img.shields.io/npm/dm/brev.svg?style=flat-square
