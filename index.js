@@ -1,5 +1,3 @@
-//import { ChildProcess } from 'child_process';
-
 'use strict'
 /* global clients */
 
@@ -7,10 +5,6 @@ var brev = (function () {
 
 var isBrowserEnviornment = typeof window !== 'undefined' && typeof document !== 'undefined',
     supportsServiceWorker = typeof navigator !== 'undefined' && 'serviceWorker' in navigator
-
-const emitRemote = (eventName, event) => {
-  
-}
 
 var observeFail = {__brev_obs:true,__observed:false}
 
