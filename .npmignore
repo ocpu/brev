@@ -1,9 +1,9 @@
+.circleci/
+.idea/
 coverage/
 test/
-.idea/
 docs/
 
-.travis.yml
 .gitignore
 bower.json
 .eslintrc*

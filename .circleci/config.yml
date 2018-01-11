@@ -4,8 +4,6 @@ jobs:
     working_directory: ~/tmp
     docker: 
       - image: circleci/node:8
-      - image: circleci/node:7
-      - image: circleci/node:6
     steps:
       - checkout
       # Download and cache dependencies

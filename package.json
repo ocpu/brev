@@ -5,7 +5,9 @@
   "main": "index.js",
   "author": "Martin Hövre <sickan843@live.se>",
   "tonicExampleFilename": "example.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^22.0.5"
+  },
   "scripts": {
     "test": "jest test/*.js",
     "watch": "jest --watch test/*.test.js"
@@ -18,8 +20,5 @@
     "events",
     "eventbus"
   ],
-  "license": "MIT",
-  "dependencies": {
-    "jest": "^22.0.5"
-  }
+  "license": "MIT"
 }
