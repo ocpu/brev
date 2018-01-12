@@ -35,8 +35,8 @@ var bus = brev.createBus()
 ### bus.on(topic, listener)
 |Parameter|Type|Description|
 |-|-|-|
-|`topic`|[\<String>][mdn-str]|The event to listen to.|
-|`listener`|[\<Function>][mdn-fun]|The actual listener to get fired.|
+|`topic`|[String][mdn-str]|The event to listen to.|
+|`listener`|[Function][mdn-fun]|The actual listener to get fired.|
 
 Returns: The instance.
 
@@ -50,10 +50,10 @@ bus.on('connect', handler);
 ### bus.once(topic, listener)
 |Parameter|Type|Description|
 |-|-|-|
-|`topic`|[\<String>][mdn-str]|The event name|
-|`listener`|[\<Function>][mdn-fun]|The function handling the event|
+|`topic`|[String][mdn-str]|The event name|
+|`listener`|[Function][mdn-fun]|The function handling the event|
 
-Returns: [\<Promise\<Result>>][mdn-prm] Promise with the result of the listener or the event.
+Returns: [Promise\<Result>][mdn-prm] Promise with the result of the listener or the event.
 
 Registers a handler to the given topic.
 It will only be called one time before it is unregistered.
@@ -69,9 +69,9 @@ bus.once('connect', handler);
 ### bus.many(topic, max, listener)
 |Parameter|Type|Description|
 |-|-|-|
-|`topic`|[\<String>][mdn-str]|The event to listen to.|
-|`max`|[\<Number>][mdn-num]|The maximum amount of times the listener can be called.|
-|`listener`|[\<Function>][mdn-fun]|The listener to get fired.|
+|`topic`|[String][mdn-str]|The event to listen to.|
+|`max`|[Number][mdn-num]|The maximum amount of times the listener can be called.|
+|`listener`|[Function][mdn-fun]|The listener to get fired.|
 
 Returns: The instance
 
@@ -86,7 +86,7 @@ bus.many('connect', 3, handler);
 ### bus.observe(topic)
 |Parameter|Type|Description|
 |-|-|-|
-|`topic`|[\<String>][mdn-str]|The event to listen to.|
+|`topic`|[String][mdn-str]|The event to listen to.|
 
 Returns: A object with some methods.
 
@@ -109,8 +109,8 @@ bus.observe('connect')
 ### bus.off(topic, listener)
 |Parameter|Type|Description|
 |-|-|-|
-|`topic`|[\<String>][mdn-str]|The event the listener is registered on.|
-|`listener`|[\<Function>][mdn-fun]|The listener to remove.|
+|`topic`|[String][mdn-str]|The event the listener is registered on.|
+|`listener`|[Function][mdn-fun]|The listener to remove.|
 
 Unregister a listener from the given event.
 
@@ -122,8 +122,8 @@ bus.off('connect', handler)
 ### bus.emit(topic\[, event])
 |Parameter|Type|Description|
 |-|-|-|
-|`topic`|[\<String>][mdn-str]|The event name to execute the event on.|
-|`[event]`|\<Any>|The event to get passed to listeners.|
+|`topic`|[String][mdn-str]|The event name to execute the event on.|
+|`[event]`|Any|The event to get passed to listeners.|
 
 Emit a event to all listeners registered to the given `topic`.
 
@@ -134,9 +134,9 @@ bus.emit('connect', { status: 'ok' })
 ### bus.emitLocal(topic\[, event])
 |Parameter|Type|Description|
 |-|-|-|
-|`topic`|[\<String>][mdn-str]|The event name to execute the event on.|
-|`[event]`|\<Any>|The event to get passed to listeners.|
-|`[local]`|[\<Boolean>][mdn-bol]|Restrict to only local tab/instance. Default is false.|
+|`topic`|[String][mdn-str]|The event name to execute the event on.|
+|`[event]`|Any|The event to get passed to listeners.|
+|`[local]`|[Boolean][mdn-bol]|Restrict to only local tab/instance. Default is false.|
 
 Emit a event to all listeners registered to the given `topic` locally.
 
@@ -147,7 +147,7 @@ bus.emitLocal('connect', { status: 'ok' })
 ### bus.mixin(obj)
 |Parameter|Type|Description|
 |-|-|-|
-|`obj`|\<Any>|The object to mix into.|
+|`obj`|Any|The object to mix into.|
 
 Mixin this eventbus into another object.
 
