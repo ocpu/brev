@@ -1,7 +1,9 @@
 'use strict'
-/* global beforeEach it */
+/* global beforeEach it expect jest brev */
 
 const createBus = require('../')
+
+const puppeteer = require('puppeteer')
 
 let bus = createBus()
 const eventName = 'some event'
@@ -14,7 +16,7 @@ beforeEach(() => {
   mock1 = jest.fn()
   mock2 = jest.fn()
 })
-
+// ON
 it('registers a function', () => {
   let expected = [mock1]
   expect(bus.reflect(eventName)).toEqual([])
@@ -191,4 +193,13 @@ it('observers can unregister themselves', () => {
   observer.unobserve()
   bus.emit(eventName, eventValue)
   expect(mock1).toHaveBeenCalledTimes(1)
+})
+
+it('evaluates in browser', async () => {
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+  await page.addScriptTag({ path: './index.js' })
+  expect(page.evaluate(() => {
+    return brev.name
+  })).resolves.toBe('createBus')
 })

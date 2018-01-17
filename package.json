@@ -1,12 +1,13 @@
 {
   "name": "brev",
-  "version": "1.1.0-beta",
+  "version": "1.1.0",
   "description": "A basic event system",
   "main": "index.js",
   "author": "Martin Hövre <sickan843@live.se>",
   "tonicExampleFilename": "example.js",
   "devDependencies": {
-    "jest": "^22.0.5"
+    "jest": "^22.0.5",
+    "puppeteer": "^1.0.0"
   },
   "scripts": {
     "test": "jest test/*.js",
