@@ -10,7 +10,7 @@
     "puppeteer": "^1.0.0"
   },
   "scripts": {
-    "test": "jest test/*.test.js",
+    "test": "jest test/*.test.js --forceExit",
     "watch": "jest --watch test/*.test.js"
   },
   "repository": "ocpu/Brev",
