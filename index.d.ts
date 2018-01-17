@@ -60,15 +60,9 @@ declare interface Brev {
      *
      * @param topic The event name to execute the event on.
      * @param event The event to get passed to listeners.
+     * @param onlyLocal Weather or not the event should be broadcasted to the serviceworker / tabs. Default: false.
      */
-    emit(topic: string, event?: any): void
-    /**
-     * Emit a event to all listeners registered to the given `topic` locally.
-     *
-     * @param topic The event name to execute the event on.
-     * @param event The event to get passed to listeners.
-     */
-    emitLocal(topic: string, event?: any): void
+    emit(topic: string, event?: any, onlyLocal?: boolean): void
     /**
      * Mixin this eventbus into another object.
      * 

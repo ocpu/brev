@@ -101,37 +101,35 @@ const createBus = () => ({
     obj.many = this.many.bind(this)
     obj.off = this.off.bind(this)
     obj.emit = this.emit.bind(this)
-    obj.emitLocal = this.emitLocal.bind(this)
     obj.mixin = this.mixin.bind(this)
     obj.observe = this.observe.bind(this)
 
     return obj
   },
-  emitLocal: function (eventName, event) {
+  emit: function (eventName, event, onlyLocal) {
     if (eventName in this._listeners) for (var i = 0; i < this._listeners[eventName].length; i++)
       this._listeners[eventName][i](event)
-  },
-  emit: function (eventName, event) {
-    this.emitLocal(eventName, event)
 
-    if (isBrowserEnviornment && supportsServiceWorker) {
-      navigator.serviceWorker.getRegistration().then(function (reg) {
-        if (reg && reg.active) reg.active.postMessage({
-          __brev: true,
-          eventName: eventName,
-          event: event
-        })
-      })
-    } else if (typeof clients !== 'undefined') {
-      clients.matchAll().then(function (clients) {
-        clients.forEach(function (client) {
-          client.postMessage({
+    if (!Boolean(onlyLocal)) {
+      if (isBrowserEnviornment && supportsServiceWorker) {
+        navigator.serviceWorker.getRegistration().then(function (reg) {
+          if (reg && reg.active) reg.active.postMessage({
             __brev: true,
             eventName: eventName,
             event: event
           })
         })
-      })
+      } else if (typeof clients !== 'undefined') {
+        clients.matchAll().then(function (clients) {
+          clients.forEach(function (client) {
+            client.postMessage({
+              __brev: true,
+              eventName: eventName,
+              event: event
+            })
+          })
+        })
+      }
     }
   }
 })
