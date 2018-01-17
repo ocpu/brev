@@ -6,8 +6,7 @@
 This is a event bus system that primarily sends and recives events. You are able to create
 new event busses and mix them into other objects. This script also works in a web page. While
 in a web page you have the capabillity to comunicate to the running service worker and the 
-from the serviceworker to all active tabs not across browsers. To not broadcast the event to 
-the serviceworker or tabs use the `emitLocal`.
+from the serviceworker to all active tabs not across browsers.
 
 ## API
 
@@ -17,8 +16,7 @@ the serviceworker or tabs use the `emitLocal`.
 - [bus.many(topic, max, listener)](#busmanytopic-max-listener)
 - [bus.observe(topic)](#busobservetopic)
 - [bus.off(topic, listener)](#busofftopic-listener)
-- [bus.emit(topic[, event])](#busemittopic-event)
-- [bus.emitLocal(topic[, event])](#busemitlocaltopic-event)
+- [bus.emit(topic\[, event\]\[, onlyLocal\])](#busemittopic-event-onlylocal)
 - [bus.mixin(obj)](#busmixinobj)
 
 ### brev.createBus()
@@ -119,29 +117,17 @@ function handler(e) {}
 bus.off('connect', handler)
 ```
 
-### bus.emit(topic\[, event])
+### bus.emit(topic\[, event]\[, onlyLocal])
 |Parameter|Type|Description|
 |-|-|-|
 |`topic`|[String][mdn-str]|The event name to execute the event on.|
 |`[event]`|Any|The event to get passed to listeners.|
+|`[onlyLocal]`|[Boolean][mdn-bol]=`false`|Whether or not the event should be broadcasted to the serviceworker / tabs.|
 
 Emit a event to all listeners registered to the given `topic`.
 
 ```js
 bus.emit('connect', { status: 'ok' })
-```
-
-### bus.emitLocal(topic\[, event])
-|Parameter|Type|Description|
-|-|-|-|
-|`topic`|[String][mdn-str]|The event name to execute the event on.|
-|`[event]`|Any|The event to get passed to listeners.|
-|`[local]`|[Boolean][mdn-bol]|Restrict to only local tab/instance. Default is false.|
-
-Emit a event to all listeners registered to the given `topic` locally.
-
-```js
-bus.emitLocal('connect', { status: 'ok' })
 ```
 
 ### bus.mixin(obj)
