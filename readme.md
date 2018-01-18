@@ -19,15 +19,12 @@ from the serviceworker to all active tabs not across browsers.
 - [bus.emit(topic\[, event\]\[, onlyLocal\])](#busemittopic-event-onlylocal)
 - [bus.mixin(obj)](#busmixinobj)
 
-### brev.createBus()
-Returns: A new event bus
-
-Creates a new event bus.
+### exports
 
 ```js
 const brev = require("brev")
-var globalBus = brev
-var bus = brev.createBus()
+var globalBus = brev // The global brev bus
+var bus = brev() // A new brev bus
 ```
 
 ### bus.on(topic, listener)
