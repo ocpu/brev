@@ -162,6 +162,13 @@ it("can be mixed into other objects", () => {
   expect(typeof myNewObject.emit).toBe('function')
   expect(typeof myNewObject.mixin).toBe('function')
 })
+it('returns the same object when mixed', () => {
+  let myObject = { hello: "world" }
+  let myNewObject = bus.mixin(myObject)
+  expect(myNewObject.on('test', () => {}).hello).toBe('world')
+  expect(myNewObject.many('test', 1, () => {}).hello).toBe('world')
+  expect(myNewObject.off('test', () => {}).hello).toBe('world')
+})
 
 it('events can be observed', () => {
   expect(bus.observe(eventName)).toBeDefined()
@@ -201,5 +208,5 @@ it('evaluates in browser', async () => {
   await page.addScriptTag({ path: './index.js' })
   expect(page.evaluate(() => {
     return brev.name
-  })).resolves.toBe('createBus')
+  })).resolves.toBe('createBus').then(() => browser.close())
 })

@@ -94,15 +94,18 @@ const createBus = () => ({
     var index
     if (event in this._listeners && ~(index = this._listeners[event].indexOf(listener)))
       this._listeners[event].splice(index, 1)
+    return this
   },
   mixin: function (obj) {
-    obj.on = this.on.bind(this)
-    obj.once = this.once.bind(this)
-    obj.many = this.many.bind(this)
-    obj.off = this.off.bind(this)
-    obj.emit = this.emit.bind(this)
-    obj.mixin = this.mixin.bind(this)
-    obj.observe = this.observe.bind(this)
+    var self = this
+    Object.defineProperty(obj, '_listeners', { configurable: false, enumerable: false, get: function () { return self._listeners } })
+    obj.on = this.on.bind(obj)
+    obj.once = this.once.bind(obj)
+    obj.many = this.many.bind(obj)
+    obj.off = this.off.bind(obj)
+    obj.emit = this.emit.bind(obj)
+    obj.mixin = this.mixin.bind(obj)
+    obj.observe = this.observe.bind(obj)
 
     return obj
   },
