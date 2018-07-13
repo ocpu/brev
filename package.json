@@ -1,21 +1,22 @@
 {
   "name": "brev",
-  "version": "1.1.0",
+  "version": "1.2.0-p.1",
   "description": "A basic event system",
   "main": "index.js",
   "author": "Martin Hövre <sickan843@live.se>",
   "tonicExampleFilename": "example.js",
   "devDependencies": {
     "jest": "^22.0.5",
-    "puppeteer": "^1.0.0"
+    "puppeteer": "^1.0.0",
+    "eslint": "^5.1.0"
   },
   "scripts": {
-    "test": "jest test/*.test.js --forceExit",
+    "test": "jest test/*.test.js --forceExit && eslint index.js",
     "watch": "jest --watch test/*.test.js"
   },
   "repository": "ocpu/Brev",
-  "bugs": "https://github.com/PoroShadows/Brev/issues",
-  "homepage": "https://github.com/PoroShadows/Brev#readme",
+  "bugs": "https://github.com/ocpu/Brev/issues",
+  "homepage": "https://github.com/ocpu/Brev#readme",
   "keywords": [
     "event",
     "events",

@@ -1,148 +1,182 @@
 'use strict'
-/* global clients */
 
-var brev = (function () {
+const createBus = (() => {
 
-var isBrowserEnviornment = typeof window !== 'undefined' && typeof document !== 'undefined',
-    supportsServiceWorker = typeof navigator !== 'undefined' && 'serviceWorker' in navigator
+const listeners = Symbol("listeners")
+const func = Symbol("func")
+const using = Symbol("using")
+const execute = Symbol("execute")
+const init = Symbol("init")
 
-var observeFail = {__brev_obs:true,__observed:false}
+const isBrowser = typeof window !== 'undefined'
+const supportsServiceWorker = typeof ServiceWorkerRegistration !== 'undefined'
+const supportsWorker = typeof Worker !== 'undefined'
+const supportsChildProcess = typeof require !== 'undefined' && typeof require('child_process') !== 'undefined'
+
+// if (isBrowser && window.)
+
+class EventStream {
+  constructor(bus, event, _) {
+    this.invoke = this.invoke.bind(this)
+    this._bus = bus
+    this._event = event
+    this[init] = _||this.invoke
+  }
+
+  [execute]() {
+    if (this[func] !== void 0)
+      throw new Error("stream has already been operated upon")
+    return new EventStream(this._bus, this._event, this[init])
+  }
+
+  invoke(e) {
+    this[func](e)
+  }
+
+  map(mapper) {
+    const stream = this[execute]()
+    this[func] = it => stream.invoke(mapper(it))
+    return stream
+  }
+
+  filter(predicate) {
+    const stream = this[execute]()
+    this[func] = it => predicate(it)&&stream.invoke(it)
+    return stream
+  }
+
+  forEach(action) {
+    const stream = this[execute]()
+    this[func] = it => action(it)
+    return stream
+  }
+
+  peek(action) {
+    const stream = this[execute]()
+    this[func] = it => (void action(it))||stream.invoke(it)
+    return stream
+  }
+
+  combine(other) {
+    const stream = this[execute]()
+    this.forEach(stream.invoke)
+    other.forEach(stream.invoke)
+    return stream
+  }
+
+  skip(n) {
+    var times = n
+    const stream = this[execute]()
+    this[func] = it => times === 0 ? stream.invoke(it) : times--
+    return stream
+  }
+
+  stop() {
+    off(this._bus[listeners], this._event, this[init])
+  }
+}
+
+const _on1 = (listeners, event, listener) => void(listeners[event] = [listener])
+const _on2 = (listeners, event, listener) => void listeners[event].push(listener)
+const listenerExists = (listeners, event, listener) => ~listeners[event].indexOf(listener)
+const on = (listeners, event, listener) => 
+  event in listeners ? listenerExists(listeners, event, listener) ? void 0 : _on2(listeners, event, listener) : _on1(listeners, event, listener)
+const onPrecondisions = (listeners, event, listener) => {
+  if (typeof event !== 'string' || !event)
+    throw new Error("event must be something")
+  if (typeof listener !== 'function')
+    return
+  on(listeners, event, listener)
+}
+const _off = (listeners, event, index) => void listeners[event].splice(index, 1)
+const off = (listeners, event, listener) => {
+  if (!(event in listeners)) return
+  const index = listeners[event].indexOf(listener)
+  if (index === -1) return
+  _off(listeners, event, index)
+}
+const many = (listeners, event, max, listener) => {
+  let calls = 0
+  const many = e => {
+    listener(e)
+    if (calls+1 === max)
+      off(listeners, event, many)
+    calls++
+  }
+  onPrecondisions(listeners, event, many)
+}
+const mixin = bus => ({get: (target, key) => key in bus || key === listeners ? bus[key] : target[key]})
+const message = (event, data) => ({__brev:true,event,data})
 
 const createBus = () => ({
-  /**
-   * @type {{[event:string]:Function[]}}
-   * @private
-   */
-  _listeners: {},
-  reflect: function (event) {
-    return event ? this._listeners[event] || [] : this._listeners
-  },
-  /**
-   * 
-   * @param {string} event 
-   */
-  observe: function (event) {
-    var bus = this
-    var mutators = []
-    var observer = function (e) {
-      var obj = e
-      mutators.forEach(mutator => {
-        if (obj !== observeFail)
-          obj = mutator(obj)
-      })
-    }
-    this.on(event, observer)
-    return {
-      filter: function (perdicate) {
-        mutators.push(function (obj) {
-          return perdicate(obj) ? obj : observeFail
-        })
-        return this
-      },
-      map: function (mapper) {
-        mutators.push(mapper)
-        return this
-      },
-      run: function (fn) {
-        mutators.push(function (obj) {
-          fn(obj)
-          return obj
-        })
-        return this
-      },
-      unobserve: function () {
-        bus.off(event, observer)
-      }
-    }
-  },
-  on: function (event, listener) {
-    if (typeof event !== "string" || (typeof event === "string" && event === ""))
-      throw new Error("event must me something")
-    if (typeof listener !== 'function')
-      return
-    if (!(event in this._listeners))
-      this._listeners[event] = []
-    if (!~this._listeners[event].indexOf(listener))
-      this._listeners[event].push(listener)
+  [listeners]: {},
+  [using]: [],
+  on(event, listener) {
+    onPrecondisions(this[listeners], event, listener)
     return this
   },
-  once: function (event, listener) {
+  once(event, listener) {
     return new Promise((resolve, reject) => {
-      this.on(event, function onceFn(e) {
-        this.off(event, onceFn)
-        try {
-          resolve(listener ? listener(e) : e)
-        } catch (e) {
-          reject(e)
+      try {
+        const once = e => {
+          try {
+            this.off(event, once)
+            resolve(listener?listener(e):e)
+          } catch (e) {
+            reject(e)
+          }
         }
-      }.bind(this))
+        this.on(event, once)
+      } catch (e) {
+        reject(e)
+      }
     })
   },
-  many: function (event, max, listener) {
+  many(event, max, listener) {
     if (max < 1)
       throw Error('max must be above 0')
-    var timesCalled = 0
-    var manyFn = function (e) {
-      if (++timesCalled >= max) {
-        this.off(event, manyFn)
-      }
-      listener(e)
-    }.bind(this)
-    return this.on(event, manyFn)
+    many(this[listeners], event, max, listener)
   },
-  off: function (event, listener) {
-    var index
-    if (event in this._listeners && ~(index = this._listeners[event].indexOf(listener)))
-      this._listeners[event].splice(index, 1)
+  off(event, listener) {
+    off(this[listeners], event, listener)
   },
-  mixin: function (obj) {
-    obj.on = this.on.bind(this)
-    obj.once = this.once.bind(this)
-    obj.many = this.many.bind(this)
-    obj.off = this.off.bind(this)
-    obj.emit = this.emit.bind(this)
-    obj.mixin = this.mixin.bind(this)
-    obj.observe = this.observe.bind(this)
-
-    return obj
+  emit(event, data) {
+    for (const listener of this.listeners(event)) listener(data)
+    if (!this[using].length) return
+    if (isBrowser) for (const worker of this[using]) worker.postMessage(message(event, data))
+    for (const sub of this[using]) sub.send(message(event, data))
   },
-  emit: function (eventName, event, onlyLocal) {
-    if (eventName in this._listeners) for (var i = 0; i < this._listeners[eventName].length; i++)
-      this._listeners[eventName][i](event)
-
-    if (!Boolean(onlyLocal)) {
-      if (isBrowserEnviornment && supportsServiceWorker) {
-        navigator.serviceWorker.getRegistration().then(function (reg) {
-          if (reg && reg.active) reg.active.postMessage({
-            __brev: true,
-            eventName: eventName,
-            event: event
-          })
-        })
-      } else if (typeof clients !== 'undefined') {
-        clients.matchAll().then(function (clients) {
-          clients.forEach(function (client) {
-            client.postMessage({
-              __brev: true,
-              eventName: eventName,
-              event: event
-            })
-          })
-        })
-      }
+  mixin(obj) {
+    return new Proxy(obj, mixin(this))
+  },
+  listeners(event) {
+    return this[listeners][event] || []
+  },
+  stream(event) {
+    const stream = new EventStream(this, event)
+    on(this[listeners], event, stream.invoke)
+    return stream
+  },
+  use(worker) {
+    if ((supportsServiceWorker && worker instanceof ServiceWorker) ||
+        (supportsWorker && worker instanceof Worker)) {
+      worker.postMessage(message('__register__'))
+      worker.addEventListener('message', e => e.data&&e.data.__brev&&this.emit(e.data.event, e.data.data))
+      this[using].push(worker)
+    }
+    else if (supportsChildProcess && worker instanceof (require('child_process').ChildProcess)) {
+      worker.send(message('__register__'))
+      this[using].push(worker)
+    }
+    else if (worker === void 0) {
+      addEventListener('message', () => {
+        // if (e.data&&e.data.__brev) e.source.
+      })
     }
   }
 })
-
 return createBus().mixin(createBus)
 })()
 
-if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-  self.addEventListener('message', function (e) {
-    if (typeof e.data === 'object' && e.data.__brev)
-      brev.emit(e.data.eventName, e.data.event, true)
-  })
-}
-
-if (typeof module === "object" && typeof module.exports === "object")
-  module.exports = brev
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+  module.exports = createBus

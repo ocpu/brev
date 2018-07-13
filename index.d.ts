@@ -1,25 +1,25 @@
 declare function brev<T>(): brev.Brev<T>
 declare namespace brev {
-  interface BrevObservabe<E> {
+  interface EventStream<E> {
     /**
      * Choose what values are proceded in the chain.
      * @param predicate 
      */
-    filter(predicate: (obj: E) => boolean): BrevObservabe<E>
+    filter(predicate: (obj: E) => boolean): EventStream<E>
     /**
      * Transform the value to a different value.
      * @param transformer 
      */
-    map<R>(transformer: (obj: E) => R): BrevObservabe<R>
+    map<R>(transformer: (obj: E) => R): EventStream<R>
     /**
      * Run a handler with the current value.
-     * @param handler What you want to do the the event.
+     * @param action What you want to do the the event.
      */
-    run(handler: (obj: E) => void): BrevObservabe<E>
+    forEach(action: (obj: E) => void): EventStream<E>
     /**
-     * Unobserve the observer.
+     * Stop reciveing events on the stream.
      */
-    unobserve()
+    stop()
   }
 
   export interface Brev<E> {
@@ -52,7 +52,7 @@ declare namespace brev {
      */
     off(topic: string, listener: (event: any) => void): Brev<E>
     /**
-     * Registers a handler to the given topic.
+     * Registers a handler to the given event.
      * It will only be called one time before it is unregistered.
      * 
      * It returns a promise containing the event if no listener was registered.
@@ -63,7 +63,7 @@ declare namespace brev {
      */
     once<K extends keyof E>(topic: K): Promise<E[K]>
     /**
-     * Registers a handler to the given topic.
+     * Registers a handler to the given event.
      * It will only be called one time before it is unregistered.
      * 
      * It returns a promise containing the event if no listener was registered.
@@ -74,7 +74,7 @@ declare namespace brev {
      */
     once<K extends keyof E, Result>(topic: K, listener: (event: E[K]) => Result): Promise<Result>
     /**
-     * Registers a handler to the given topic.
+     * Registers a handler to the given event.
      * It will only be called one time before it is unregistered.
      * 
      * It returns a promise containing the event if no listener was registered.
@@ -85,7 +85,7 @@ declare namespace brev {
      */
     once(topic: string): Promise<any>
     /**
-     * Registers a handler to the given topic.
+     * Registers a handler to the given event.
      * It will only be called one time before it is unregistered.
      * 
      * It returns a promise containing the event if no listener was registered.
@@ -114,26 +114,12 @@ declare namespace brev {
      */
     many<T>(topic: string, max: number, listener: (event: T) => void): Brev<E>
     /**
-     * Emit a event to all listeners registered to the given `topic`.
+     * Emit a event to all listeners registered to the given `event`.
      *
      * @param topic The event name to execute the event on.
-     * @param event The event to get passed to listeners.
+     * @param data The event to get passed to listeners.
      */
-    emit<K extends keyof E>(topic: K, event: E[K]): void
-    /**
-     * Emit a event to all listeners registered to the given `topic`.
-     *
-     * @param topic The event name to execute the event on.
-     * @param event The event to get passed to listeners.
-     */
-    emit(topic: string, event?: any): void
-    /**
-     * Emit a event to all listeners registered to the given `topic` locally.
-     *
-     * @param topic The event name to execute the event on.
-     * @param event The event to get passed to listeners.
-     */
-    emitLocal(topic: string, event?: any): void
+    emit<K extends keyof E>(topic: K, data: E[K]): void
     /**
      * Mixin this eventbus into another object.
      * 
@@ -141,20 +127,20 @@ declare namespace brev {
      */
     mixin<T>(obj: T): T & Brev<E>
     /**
-     * Register a observer on a topic.
-     * @param topic The topic to observe.
+     * Register a stram on a event.
+     * @param topic The event to observe.
      */
-    observe<K extends keyof E>(topic: K): BrevObservabe<E[K]>
+    stream<K extends keyof E>(topic: K): EventStream<E[K]>
     /**
-     * Register a observer on a topic.
-     * @param topic The topic to observe.
+     * Register a observer on a event.
+     * @param topic The event to observe.
      */
-    observe<T>(topic: string): BrevObservabe<T>
+    stream<T>(topic: string): EventStream<T>
     /**
-     * Register a observer on a topic.
-     * @param topic The topic to observe.
+     * Register a observer on a event.
+     * @param topic The event to observe.
      */
-    observe(event: string): BrevObservabe<any>
+    stream(topic: string): EventStream<any>
   }
 
   export function createBus<T>(): Brev<T>

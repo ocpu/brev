@@ -8,3 +8,5 @@ docs/
 bower.json
 .eslintrc*
 CNAME
+wallaby.js
+example.js
